@@ -26,13 +26,7 @@ namespace CH_BACKEND.Controllers
                 {
                     IdMedioPago = m.IdMedioPago,
                     Descripcion = m.Descripcion,
-                    Titular = m.Titular,
-                    Pagos = m.Pagos.Select(p => new PagoResponse
-                    {
-                        IdPago = p.IdPago,
-                        MontoPagado = p.MontoPagado,
-                        FechaPago = p.FechaPago
-                    }).ToList()
+                    Titular = m.Titular
                 }).ToList();
 
             return Ok(mediosPago);
@@ -48,33 +42,21 @@ namespace CH_BACKEND.Controllers
             {
                 IdMedioPago = medioPago.IdMedioPago,
                 Descripcion = medioPago.Descripcion,
-                Titular = medioPago.Titular,
-                Pagos = medioPago.Pagos.Select(p => new PagoResponse
-                {
-                    IdPago = p.IdPago,
-                    MontoPagado = p.MontoPagado,
-                    FechaPago = p.FechaPago
-                }).ToList()
+                Titular = medioPago.Titular
             };
 
             return Ok(response);
         }
 
         [HttpPost]
-        public IActionResult CrearMedioPago([FromBody] global::MedioPagoResponse request)
+        public IActionResult CrearMedioPago([FromBody] MedioPagoRequest request)
         {
             if (request == null) return BadRequest("Datos inválidos.");
 
             var medioPago = new MedioPago
             {
                 Descripcion = request.Descripcion,
-                Titular = request.Titular,
-                Pagos = request.Pagos?.Select(p => new Pago
-                {
-                    IdVenta = p.IdVenta,
-                    MontoPagado = p.MontoPagado,
-                    FechaPago = p.FechaPago
-                }).ToList()
+                Titular = request.Titular
             };
 
             _medioPagoLogica.CrearMedioPago(medioPago);
@@ -82,19 +64,13 @@ namespace CH_BACKEND.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult ActualizarMedioPago(int id, [FromBody] global::MedioPagoResponse request)
+        public IActionResult ActualizarMedioPago(int id, [FromBody] MedioPagoRequest request)
         {
             var medioPagoExistente = _medioPagoLogica.ObtenerMedioPagoPorId(id);
             if (medioPagoExistente == null) return NotFound();
 
             medioPagoExistente.Descripcion = request.Descripcion;
             medioPagoExistente.Titular = request.Titular;
-            medioPagoExistente.Pagos = request.Pagos?.Select(p => new Pago
-            {
-                IdVenta = p.IdVenta,
-                MontoPagado = p.MontoPagado,
-                FechaPago = p.FechaPago
-            }).ToList();
 
             _medioPagoLogica.ActualizarMedioPago(medioPagoExistente);
             return NoContent();

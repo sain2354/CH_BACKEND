@@ -25,24 +25,34 @@ public class CategoriaLogica
         return categoria != null ? new CategoriaResponse(categoria) : null;
     }
 
-    public async Task<bool> AgregarCategoria(CategoriaRequest request)
+    // Antes devolvías 'bool'. Ahora devolvemos 'CategoriaResponse?'.
+    // Si la creación falla, devolvemos null. Si es exitosa, devolvemos el objeto recién creado.
+    public async Task<CategoriaResponse?> AgregarCategoria(CategoriaRequest request)
     {
-        var categoria = new Categoria
+        var nueva = new Categoria
         {
             Descripcion = request.Descripcion
         };
 
-        return await _categoriaRepositorio.Crear(categoria);
+        var resultado = await _categoriaRepositorio.Crear(nueva);
+        if (!resultado) return null;
+
+        // Ahora que la categoría está guardada en DB, 'nueva' debería tener su Id.
+        // Devolvemos el objeto 'CategoriaResponse' para que el Controller retorne JSON.
+        return new CategoriaResponse(nueva);
     }
 
-    public async Task<bool> ActualizarCategoria(int id, CategoriaRequest request)
+    // Similar para actualizar
+    public async Task<CategoriaResponse?> ActualizarCategoria(int id, CategoriaRequest request)
     {
         var categoriaExistente = await _categoriaRepositorio.ObtenerPorId(id);
-        if (categoriaExistente == null) return false;
+        if (categoriaExistente == null) return null;
 
         categoriaExistente.Descripcion = request.Descripcion;
+        var resultado = await _categoriaRepositorio.Actualizar(categoriaExistente);
+        if (!resultado) return null;
 
-        return await _categoriaRepositorio.Actualizar(categoriaExistente);
+        return new CategoriaResponse(categoriaExistente);
     }
 
     public async Task<bool> EliminarCategoria(int id)

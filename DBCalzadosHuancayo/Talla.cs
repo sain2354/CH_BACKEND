@@ -19,5 +19,8 @@ public partial class Talla
     public string Descripcion { get; set; } = null!;
 
     [InverseProperty("IdTallaNavigation")]
+    public virtual ICollection<CarritoDetalle> CarritoDetalles { get; set; } = new List<CarritoDetalle>();
+
+    [InverseProperty("IdTallaNavigation")]
     public virtual ICollection<TallaProducto> TallaProductos { get; set; } = new List<TallaProducto>();
 }

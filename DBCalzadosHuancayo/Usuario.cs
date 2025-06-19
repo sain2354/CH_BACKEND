@@ -20,7 +20,7 @@ public partial class Usuario
     public string Username { get; set; } = null!;
 
     [Column("password")]
-    [StringLength(50)]
+    [StringLength(255)]
     [Unicode(false)]
     public string Password { get; set; } = null!;
 
@@ -29,9 +29,33 @@ public partial class Usuario
     [Unicode(false)]
     public string NombreCompleto { get; set; } = null!;
 
+    // NUEVOS CAMPOS:
+    [Column("email")]
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Email { get; set; } = null!;
+
+    [Column("telefono")]
+    [StringLength(20)]
+    [Unicode(false)]
+    public string Telefono { get; set; } = "No registrado"; // Valor por defecto
+
+    [Column("fecha_registro")]
+    public DateTime FechaRegistro { get; set; } = DateTime.Now;
+
+    [InverseProperty("IdUsuarioNavigation")]
+    public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
+
     [InverseProperty("UsuarioResponsableNavigation")]
     public virtual ICollection<HistorialInventario> HistorialInventarios { get; set; } = new List<HistorialInventario>();
 
     [InverseProperty("IdUsuarioNavigation")]
+    public virtual ICollection<UsuarioDireccion> UsuarioDireccions { get; set; } = new List<UsuarioDireccion>();
+
+    [InverseProperty("IdUsuarioNavigation")]
     public virtual ICollection<UsuarioRol> UsuarioRols { get; set; } = new List<UsuarioRol>();
+
+    // NUEVO: Propiedad para almacenar las ventas asociadas al usuario
+    [InverseProperty("IdUsuarioNavigation")]
+    public virtual ICollection<Venta> Ventas { get; set; } = new List<Venta>();
 }

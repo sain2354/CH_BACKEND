@@ -1,6 +1,7 @@
 ﻿using CH_BACKEND.DBCalzadosHuancayo;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CH_BACKEND.Repositories
@@ -17,6 +18,15 @@ namespace CH_BACKEND.Repositories
         public async Task<List<TallaProducto>> ObtenerTallaProductos()
         {
             return await _context.TallaProductos.ToListAsync();
+        }
+
+        // NUEVO: Obtener tallas de un producto
+        public async Task<List<TallaProducto>> ObtenerTallasPorProducto(int idProducto)
+        {
+            // Filtra TallaProductos por idProducto
+            return await _context.TallaProductos
+                .Where(tp => tp.IdProducto == idProducto)
+                .ToListAsync();
         }
 
         public async Task<TallaProducto?> ObtenerTallaProductoPorId(int idProducto, int idTalla)

@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace CH_BACKEND.Repositories
 {
-    public class DetalleVentaRepositorio
+    public class DetalleVentaRepository
     {
         private readonly _DbContextCalzadosHuancayo _context;
 
-        public DetalleVentaRepositorio(_DbContextCalzadosHuancayo context)
+        public DetalleVentaRepository(_DbContextCalzadosHuancayo context)
         {
             _context = context;
         }

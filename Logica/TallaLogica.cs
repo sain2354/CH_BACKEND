@@ -37,5 +37,34 @@ namespace CH_BACKEND.Logica
                 Descripcion = talla.Descripcion
             };
         }
+
+        // NUEVO: Crear Talla
+        public async Task<TallaResponse> CrearTalla(TallaRequest request)
+        {
+            var nuevaTalla = new Talla
+            {
+                Descripcion = request.Descripcion
+            };
+
+            await _tallaRepository.CrearTalla(nuevaTalla);
+
+            return new TallaResponse
+            {
+                IdTalla = nuevaTalla.IdTalla,
+                Descripcion = nuevaTalla.Descripcion
+            };
+        }
+
+        // NUEVO: Actualizar Talla
+        public async Task<bool> ActualizarTalla(int id, TallaRequest request)
+        {
+            var talla = await _tallaRepository.ObtenerTallaPorId(id);
+            if (talla == null) return false;
+
+            talla.Descripcion = request.Descripcion;
+            await _tallaRepository.ActualizarTalla(talla);
+
+            return true;
+        }
     }
 }

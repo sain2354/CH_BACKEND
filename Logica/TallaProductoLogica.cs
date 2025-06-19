@@ -27,6 +27,20 @@ namespace CH_BACKEND.Logica
             }).ToList();
         }
 
+        // NUEVO: Obtener tallas de un producto
+        public async Task<List<TallaProductoResponse>> ObtenerTallasPorProducto(int idProducto)
+        {
+            var lista = await _tallaProductoRepository.ObtenerTallasPorProducto(idProducto);
+
+            // Mapeamos a TallaProductoResponse
+            return lista.Select(tp => new TallaProductoResponse
+            {
+                IdProducto = tp.IdProducto,
+                IdTalla = tp.IdTalla,
+                Stock = tp.Stock
+            }).ToList();
+        }
+
         public async Task<TallaProductoResponse?> ObtenerTallaProductoPorId(int idProducto, int idTalla)
         {
             var tallaProducto = await _tallaProductoRepository.ObtenerTallaProductoPorId(idProducto, idTalla);

@@ -8,6 +8,8 @@
     ".NETCoreApp,Version=v8.0": {
       "CH_BACKEND/1.0.0": {
         "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
+          "MercadoPago": "1.0.4477.31589",
           "Microsoft.EntityFrameworkCore": "8.0.4",
           "Microsoft.EntityFrameworkCore.Design": "8.0.4",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.4",
@@ -52,11 +54,30 @@
           }
         }
       },
+      "BCrypt.Net-Next/4.0.3": {
+        "runtime": {
+          "lib/net6.0/BCrypt.Net-Next.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0"
+          }
+        }
+      },
       "Humanizer.Core/2.14.1": {
         "runtime": {
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "MercadoPago/1.0.4477.31589": {
+        "dependencies": {
+          "RestSharp": "102.7.0"
+        },
+        "runtime": {
+          "lib/MercadoPago.dll": {
+            "assemblyVersion": "1.0.4477.31589",
+            "fileVersion": "1.0.4477.31589"
           }
         }
       },
@@ -614,6 +635,25 @@
           }
         }
       },
+      "Newtonsoft.Json/3.5.8": {
+        "runtime": {
+          "lib/35/Newtonsoft.Json.dll": {
+            "assemblyVersion": "3.5.0.0",
+            "fileVersion": "3.5.0.0"
+          }
+        }
+      },
+      "RestSharp/102.7.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "3.5.8"
+        },
+        "runtime": {
+          "lib/net35/RestSharp.dll": {
+            "assemblyVersion": "102.7.0.0",
+            "fileVersion": "102.7.0.0"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore/6.6.2": {
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "6.0.5",
@@ -928,12 +968,26 @@
       "path": "azure.identity/1.10.3",
       "hashPath": "azure.identity.1.10.3.nupkg.sha512"
     },
+    "BCrypt.Net-Next/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-W+U9WvmZQgi5cX6FS5GDtDoPzUCV4LkBLkywq/kRZhuDwcbavOzcDAr3LXJFqHUi952Yj3LEYoWW0jbEUQChsA==",
+      "path": "bcrypt.net-next/4.0.3",
+      "hashPath": "bcrypt.net-next.4.0.3.nupkg.sha512"
+    },
     "Humanizer.Core/2.14.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "MercadoPago/1.0.4477.31589": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GX1NSZaDdUcxmBkCEmaoCkJo/+FtZy0RmKbV2Yw9UBf9+2O2kULDhKWEdpWH23zsUoJunXb3taAlmqi5nMWEBw==",
+      "path": "mercadopago/1.0.4477.31589",
+      "hashPath": "mercadopago.1.0.4477.31589.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
       "type": "package",
@@ -1221,6 +1275,20 @@
       "sha512": "sha512-KZYeKBET/2Z0gY1WlTAK7+RHTl7GSbtvTLDXEZZojUdAPqpQNDL6tHv7VUpqfX5VEOh+uRGKaZXkuD253nEOBQ==",
       "path": "mono.texttemplating/2.2.1",
       "hashPath": "mono.texttemplating.2.2.1.nupkg.sha512"
+    },
+    "Newtonsoft.Json/3.5.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Xmri4q9s1NjuiBtOFkWMU9sUZdw5V7kFSf3CQQ3TlDyzWQHo94d5cHNxsSlnezGAZSPfdEG5k7bOrkzTe6rUOQ==",
+      "path": "newtonsoft.json/3.5.8",
+      "hashPath": "newtonsoft.json.3.5.8.nupkg.sha512"
+    },
+    "RestSharp/102.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-G5PnwhT5d92i75cFP4ql+MZXs0AmRCnzV3BDNr01WT1SkY8QODttbJBz2tNJdLcKLuWfhf88/F6ThklStL9Yyw==",
+      "path": "restsharp/102.7.0",
+      "hashPath": "restsharp.102.7.0.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/6.6.2": {
       "type": "package",

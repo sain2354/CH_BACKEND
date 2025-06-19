@@ -25,9 +25,9 @@ namespace CH_BACKEND.Request
         public string? TipoPersona { get; set; }
 
         [StringLength(50, ErrorMessage = "El tipo de documento no debe superar los 50 caracteres.")]
-        public string? TipoDocumento { get; set; } // Cambio a PascalCase
+        public string? TipoDocumento { get; set; } // “DNI” o “RUC”
 
         [StringLength(15, ErrorMessage = "El número de documento no debe superar los 15 caracteres.")]
-        public string? NumeroDocumento { get; set; } // Cambio a PascalCase
+        public string? NumeroDocumento { get; set; }
     }
 }

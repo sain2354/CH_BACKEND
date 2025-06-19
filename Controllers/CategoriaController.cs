@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-[Route("api/categorias")]
+[Route("api/[controller]")]
 [ApiController]
 public class CategoriaController : ControllerBase
 {
@@ -33,27 +33,51 @@ public class CategoriaController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> AgregarCategoria([FromBody] CategoriaRequest request)
     {
-        var creada = await _categoriaLogica.AgregarCategoria(request);
-        if (!creada) return BadRequest("Error al crear la categoría.");
+        // Ahora, la lógica devuelve un objeto 'CategoriaResponse' si se creó, o null si falló
+        var categoriaCreada = await _categoriaLogica.AgregarCategoria(request);
+        if (categoriaCreada == null)
+        {
+            return BadRequest("Error al crear la categoría.");
+        }
 
-        return Ok("Categoría creada correctamente.");
+        // Devolvemos JSON con un mensaje y la data recién creada
+        return Ok(new
+        {
+            mensaje = "Categoría creada correctamente.",
+            data = categoriaCreada
+        });
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult> ActualizarCategoria(int id, [FromBody] CategoriaRequest request)
     {
-        var actualizada = await _categoriaLogica.ActualizarCategoria(id, request);
-        if (!actualizada) return NotFound("No se encontró la categoría.");
+        // La lógica devuelve un 'CategoriaResponse' si se actualizó, o null si no existe
+        var categoriaActualizada = await _categoriaLogica.ActualizarCategoria(id, request);
+        if (categoriaActualizada == null)
+        {
+            return NotFound("No se encontró la categoría.");
+        }
 
-        return Ok("Categoría actualizada correctamente.");
+        return Ok(new
+        {
+            mensaje = "Categoría actualizada correctamente.",
+            data = categoriaActualizada
+        });
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> EliminarCategoria(int id)
     {
+        // La lógica devuelve un bool, true si se eliminó, false si no existe
         var eliminada = await _categoriaLogica.EliminarCategoria(id);
-        if (!eliminada) return NotFound("No se encontró la categoría.");
+        if (!eliminada)
+        {
+            return NotFound("No se encontró la categoría.");
+        }
 
-        return Ok("Categoría eliminada correctamente.");
+        return Ok(new
+        {
+            mensaje = "Categoría eliminada correctamente."
+        });
     }
 }

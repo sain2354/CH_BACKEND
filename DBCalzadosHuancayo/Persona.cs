@@ -38,6 +38,5 @@ public partial class Persona
     [StringLength(15)]
     public string? NumeroDocumento { get; set; }
 
-    [InverseProperty("IdPersonaNavigation")]
-    public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
+    
 }

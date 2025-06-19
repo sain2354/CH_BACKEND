@@ -24,16 +24,20 @@ namespace CH_BACKEND.Repositories
             return await _context.Personas.FindAsync(id);
         }
 
-        public async Task<bool> Crear(Persona persona)
+        // Cambiamos el método Crear para que devuelva la entidad recién guardada (con Id)
+        public async Task<Persona> Crear(Persona persona)
         {
             _context.Personas.Add(persona);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
+            return persona;
         }
 
-        public async Task<bool> Actualizar(Persona persona)
+        // Cambiamos el método Actualizar para que devuelva la entidad actualizada
+        public async Task<Persona> Actualizar(Persona persona)
         {
             _context.Personas.Update(persona);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
+            return persona;
         }
 
         public async Task<bool> Eliminar(int id)

@@ -1,11 +1,20 @@
 {
   "Version": 1,
-  "Hash": "nyevx5UHu9fbYDSn66JjoM1GQrduLW2ZiSlaU6kxzfs=",
+  "Hash": "KDy2yvVSzpjKxF1vz+9GSfyNHnpzOjjXEQmW+i5FXNU=",
   "Source": "CH_BACKEND",
   "BasePath": "_content/CH_BACKEND",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "CH_BACKEND\\wwwroot",
+      "Source": "CH_BACKEND",
+      "ContentRoot": "E:\\CH_BACKEND\\CH_BACKEND\\wwwroot\\",
+      "BasePath": "_content/CH_BACKEND",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [],
+  "Endpoints": []
 }

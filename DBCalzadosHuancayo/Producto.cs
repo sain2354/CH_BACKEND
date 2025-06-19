@@ -48,9 +48,11 @@ public partial class Producto
     public bool Estado { get; set; }
 
     [Column("foto")]
-    [StringLength(255)]
     [Unicode(false)]
     public string? Foto { get; set; }
+
+    [InverseProperty("IdProductoNavigation")]
+    public virtual ICollection<CarritoDetalle> CarritoDetalles { get; set; } = new List<CarritoDetalle>();
 
     [InverseProperty("IdProductoNavigation")]
     public virtual ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();

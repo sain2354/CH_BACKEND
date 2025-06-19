@@ -1,6 +1,5 @@
 ﻿using CH_BACKEND.DBCalzadosHuancayo;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,29 +16,30 @@ namespace CH_BACKEND.Repositories
 
         public async Task<List<Venta>> ObtenerTodas()
         {
-            return await _context.Venta
-                .Include(v => v.IdPersonaNavigation)
+            return await _context.Ventas
+                .Include(v => v.IdUsuarioNavigation)
                 .Include(v => v.DetalleVenta)
                 .ToListAsync();
         }
 
         public async Task<Venta?> ObtenerPorId(int id)
         {
-            return await _context.Venta
-                .Include(v => v.IdPersonaNavigation)
+            return await _context.Ventas
+                .Include(v => v.IdUsuarioNavigation)
                 .Include(v => v.DetalleVenta)
                 .FirstOrDefaultAsync(v => v.IdVenta == id);
         }
 
-        public async Task<bool> Crear(Venta venta)
+        public async Task<Venta?> Crear(Venta venta)
         {
-            await _context.Venta.AddAsync(venta);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.Ventas.AddAsync(venta);
+            var result = await _context.SaveChangesAsync() > 0;
+            return result ? venta : null;
         }
 
         public async Task<bool> Actualizar(Venta venta)
         {
-            _context.Venta.Update(venta);
+            _context.Ventas.Update(venta);
             return await _context.SaveChangesAsync() > 0;
         }
 
@@ -48,7 +48,13 @@ namespace CH_BACKEND.Repositories
             var venta = await ObtenerPorId(id);
             if (venta == null) return false;
 
-            _context.Venta.Remove(venta);
+            _context.Ventas.Remove(venta);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        // Método agregado para guardar cambios de forma asíncrona.
+        public async Task<bool> GuardarCambiosAsync()
+        {
             return await _context.SaveChangesAsync() > 0;
         }
     }

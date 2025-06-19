@@ -1,8 +1,8 @@
-﻿using CH_BACKEND.Repositories;
+﻿using CH_BACKEND.DBCalzadosHuancayo;
+using CH_BACKEND.Repositories;
 using CH_BACKEND.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CH_BACKEND.DBCalzadosHuancayo;
 
 namespace CH_BACKEND.Logica
 {
@@ -15,10 +15,13 @@ namespace CH_BACKEND.Logica
             _productoRepositorio = productoRepositorio;
         }
 
-        public async Task<List<ProductoResponse>> ObtenerProductos()
+        // Filtra sólo por categoría, sin paginar
+        public async Task<List<ProductoResponse>> ObtenerProductosPorCategoria(int cat)
         {
-            var productos = await _productoRepositorio.ObtenerTodos();
-            return productos.ConvertAll(p => new ProductoResponse(p));
+            var lista = await _productoRepositorio.ObtenerPorCategoria(cat);
+            // Convertimos a ProductoResponse
+            var productosResp = lista.ConvertAll(p => new ProductoResponse(p));
+            return productosResp;
         }
 
         public async Task<ProductoResponse> ObtenerProductoPorId(int id)
@@ -27,7 +30,7 @@ namespace CH_BACKEND.Logica
             return producto != null ? new ProductoResponse(producto) : null;
         }
 
-        public async Task<bool> AgregarProducto(ProductoRequest request)
+        public async Task<int> AgregarProducto(ProductoRequest request)
         {
             var producto = new Producto
             {
@@ -44,7 +47,8 @@ namespace CH_BACKEND.Logica
                 Foto = request.Foto
             };
 
-            return await _productoRepositorio.Crear(producto);
+            var resultado = await _productoRepositorio.Crear(producto);
+            return resultado ? producto.IdProducto : 0;
         }
 
         public async Task<bool> ActualizarProducto(int id, ProductoRequest request)
@@ -52,10 +56,15 @@ namespace CH_BACKEND.Logica
             var productoExistente = await _productoRepositorio.ObtenerPorId(id);
             if (productoExistente == null) return false;
 
+            productoExistente.IdCategoria = request.IdCategoria;
+            productoExistente.IdSubCategoria = request.IdSubCategoria;
+            productoExistente.CodigoBarra = request.CodigoBarra;
             productoExistente.Nombre = request.Nombre;
             productoExistente.Stock = request.Stock;
+            productoExistente.StockMinimo = request.StockMinimo;
             productoExistente.PrecioVenta = request.PrecioVenta;
             productoExistente.PrecioCompra = request.PrecioCompra;
+            productoExistente.IdUnidadMedida = request.IdUnidadMedida;
             productoExistente.Estado = request.Estado;
             productoExistente.Foto = request.Foto;
 
@@ -64,9 +73,6 @@ namespace CH_BACKEND.Logica
 
         public async Task<bool> EliminarProducto(int id)
         {
-            var producto = await _productoRepositorio.ObtenerPorId(id);
-            if (producto == null) return false;
-
             return await _productoRepositorio.Eliminar(id);
         }
     }

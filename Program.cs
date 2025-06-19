@@ -4,29 +4,45 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CH_BACKEND.DBCalzadosHuancayo;
 using CH_BACKEND.Logica;
-using CH_BACKEND.Repositories; // Asegúrate de importar el repositorio
+using CH_BACKEND.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 Agregar servicios al contenedor
+// 1) Agregar servicios al contenedor
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 🔹 Registrar DbContext (si usas Entity Framework)
+// 2) Configurar CORS (Permitir cualquier origen)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+// 3) Registrar DbContext (verifica que la cadena sea correcta)
 builder.Services.AddDbContext<_DbContextCalzadosHuancayo>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Data Source=LAPTOP-6HLGI3JI\\SQLEXPRESS;Database=Calzados;Trusted_Connection=True;TrustServerCertificate=True;")));
+    options.UseSqlServer(
+        "workstation id=Calzados.mssql.somee.com;packet size=4096;user id=pepe12_SQLLogin_2;pwd=zhl9uctlun;data source=Calzados.mssql.somee.com;persist security info=False;initial catalog=Calzados;TrustServerCertificate=True"
+    )
+);
 
-
-builder.Services.AddScoped<VentaRepositorio>(); // Registrar el repositorio primero
-builder.Services.AddScoped<VentaLogica>(); // Luego registrar la lógica de ventas
-builder.Services.AddScoped<CategoriaRepositorio>(); // Registrar el repositorio primero
-builder.Services.AddScoped<CategoriaLogica>(); // Luego registrar la lógica de ventas
-builder.Services.AddScoped<DevolucionRepository>(); // Registrar el repositorio primero
-builder.Services.AddScoped<DevolucionLogica>(); // Registrar la lógica de devoluciones
+// 4) Registrar servicios y lógica
+builder.Services.AddScoped<VentaRepositorio>();
+builder.Services.AddScoped<VentaLogica>();
+builder.Services.AddScoped<CategoriaRepositorio>();
+builder.Services.AddScoped<CategoriaLogica>();
+builder.Services.AddScoped<DevolucionRepository>();
+builder.Services.AddScoped<DevolucionLogica>();
+builder.Services.AddScoped<DetalleVentaRepository>();
 builder.Services.AddScoped<EmpresaLogica>();
 builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
-builder.Services.AddScoped<HistorialInventarioRepository>(); 
+builder.Services.AddScoped<HistorialInventarioRepository>();
 builder.Services.AddScoped<HistorialInventarioLogica>();
 builder.Services.AddScoped<InventarioRepository>();
 builder.Services.AddScoped<InventarioLogica>();
@@ -54,18 +70,30 @@ builder.Services.AddScoped<UsuarioRolRepositorio>();
 builder.Services.AddScoped<UsuarioRolLogica>();
 builder.Services.AddScoped<VentaRepositorio>();
 builder.Services.AddScoped<VentaLogica>();
-
+builder.Services.AddScoped<CarritoRepositorio>();
+builder.Services.AddScoped<CarritoLogica>();
+builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<UsuarioLogica>();
+builder.Services.AddScoped<UsuarioDireccionRepository>();
+builder.Services.AddScoped<UsuarioDireccionLogica>();
+builder.Services.AddScoped<DireccionEntregaRepository>();
+builder.Services.AddScoped<DireccionEntregaLogica>();
 
 var app = builder.Build();
 
-// 🔹 Configurar el pipeline de middleware
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// 5) Habilitar servir archivos estáticos desde wwwroot (si Somee lo permite)
+app.UseStaticFiles();
 
-app.UseHttpsRedirection();
+// 6) Swagger
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// 7) (Opcional) Redirección HTTPS. Si Somee no soporta HTTPS, coméntalo.
+// app.UseHttpsRedirection();
+
+// 8) CORS
+app.UseCors("AllowAll");
+
 app.UseAuthorization();
 app.MapControllers();
 

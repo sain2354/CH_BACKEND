@@ -22,6 +22,61 @@ namespace CH_BACKEND.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Carrito", b =>
+                {
+                    b.Property<int>("IdCarrito")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id_carrito");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCarrito"));
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("fecha_creacion")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int")
+                        .HasColumnName("id_usuario");
+
+                    b.HasKey("IdCarrito")
+                        .HasName("PK__Carrito__83A2AD9C69CB431D");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("Carrito");
+                });
+
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.CarritoDetalle", b =>
+                {
+                    b.Property<int>("IdCarrito")
+                        .HasColumnType("int")
+                        .HasColumnName("id_carrito");
+
+                    b.Property<int>("IdProducto")
+                        .HasColumnType("int")
+                        .HasColumnName("id_producto");
+
+                    b.Property<int>("IdTalla")
+                        .HasColumnType("int")
+                        .HasColumnName("id_talla");
+
+                    b.Property<decimal>("Cantidad")
+                        .HasColumnType("decimal(8, 2)")
+                        .HasColumnName("cantidad");
+
+                    b.HasKey("IdCarrito", "IdProducto", "IdTalla")
+                        .HasName("PK__Carrito___7090831C4615DB4B");
+
+                    b.HasIndex("IdProducto");
+
+                    b.HasIndex("IdTalla");
+
+                    b.ToTable("Carrito_Detalle");
+                });
+
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Categoria", b =>
                 {
                     b.Property<int>("IdCategoria")
@@ -136,6 +191,50 @@ namespace CH_BACKEND.Migrations
                     b.HasIndex("IdVenta");
 
                     b.ToTable("Devoluciones");
+                });
+
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.DireccionEntrega", b =>
+                {
+                    b.Property<int>("IdDireccionEntrega")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id_direccion_entrega");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDireccionEntrega"));
+
+                    b.Property<decimal>("CostoEnvio")
+                        .HasColumnType("decimal(8, 2)")
+                        .HasColumnName("costo_envio");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("direccion");
+
+                    b.Property<int>("IdVenta")
+                        .HasColumnType("int")
+                        .HasColumnName("id_venta");
+
+                    b.Property<decimal?>("Lat")
+                        .HasColumnType("decimal(9, 6)")
+                        .HasColumnName("lat");
+
+                    b.Property<decimal?>("Lng")
+                        .HasColumnType("decimal(9, 6)")
+                        .HasColumnName("lng");
+
+                    b.Property<string>("Referencia")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("referencia");
+
+                    b.HasKey("IdDireccionEntrega")
+                        .HasName("PK__Direccio__EA452087DE9D7120");
+
+                    b.HasIndex("IdVenta");
+
+                    b.ToTable("DireccionEntrega");
                 });
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Empresa", b =>
@@ -328,13 +427,23 @@ namespace CH_BACKEND.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPago"));
 
+                    b.Property<string>("EstadoPago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("estado_pago");
+
                     b.Property<DateOnly>("FechaPago")
                         .HasColumnType("date")
                         .HasColumnName("fecha_pago");
 
-                    b.Property<int>("IdMedioPago")
+                    b.Property<int?>("IdMedioPago")
                         .HasColumnType("int")
                         .HasColumnName("id_medio_pago");
+
+                    b.Property<string>("IdTransaccionMP")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("id_transaccion_mp");
 
                     b.Property<int>("IdVenta")
                         .HasColumnType("int")
@@ -344,10 +453,13 @@ namespace CH_BACKEND.Migrations
                         .HasColumnType("decimal(8, 2)")
                         .HasColumnName("monto_pagado");
 
+                    b.Property<string>("PreferenceIdMP")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("preference_id_mp");
+
                     b.HasKey("IdPago")
                         .HasName("PK__Pago__0941B074510023E3");
-
-                    b.HasIndex("IdMedioPago");
 
                     b.HasIndex("IdVenta");
 
@@ -425,9 +537,8 @@ namespace CH_BACKEND.Migrations
                         .HasColumnName("estado");
 
                     b.Property<string>("Foto")
-                        .HasMaxLength(255)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("varchar(max)")
                         .HasColumnName("foto");
 
                     b.Property<int>("IdCategoria")
@@ -610,8 +721,7 @@ namespace CH_BACKEND.Migrations
                         .HasColumnType("decimal(8, 2)")
                         .HasColumnName("stock");
 
-                    b.HasKey("IdProducto", "IdTalla")
-                        .HasName("PK__Talla_Pr__3322E80EFD5B2D18");
+                    b.HasKey("IdProducto", "IdTalla");
 
                     b.HasIndex("IdTalla");
 
@@ -649,6 +759,17 @@ namespace CH_BACKEND.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("email");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("fecha_registro");
+
                     b.Property<string>("NombreCompleto")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -658,10 +779,17 @@ namespace CH_BACKEND.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(50)
+                        .HasMaxLength(255)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("password");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("telefono");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -677,6 +805,52 @@ namespace CH_BACKEND.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuario");
+                });
+
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.UsuarioDireccion", b =>
+                {
+                    b.Property<int>("IdDireccion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id_direccion");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDireccion"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("direccion");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("fecha_registro")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int")
+                        .HasColumnName("id_usuario");
+
+                    b.Property<decimal?>("Lat")
+                        .HasColumnType("decimal(9, 6)")
+                        .HasColumnName("lat");
+
+                    b.Property<decimal?>("Lng")
+                        .HasColumnType("decimal(9, 6)")
+                        .HasColumnName("lng");
+
+                    b.Property<string>("Referencia")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("referencia");
+
+                    b.HasKey("IdDireccion")
+                        .HasName("PK__UsuarioD__25C35D073F491800");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("UsuarioDireccion");
                 });
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.UsuarioRol", b =>
@@ -709,7 +883,16 @@ namespace CH_BACKEND.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVenta"));
 
+                    b.Property<decimal>("CostoEnvio")
+                        .HasColumnType("decimal(18, 2)")
+                        .HasColumnName("costo_envio");
+
                     b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("EstadoPago")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -717,7 +900,7 @@ namespace CH_BACKEND.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("IdPersona")
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
                     b.Property<string>("NumeroComprobante")
@@ -744,9 +927,42 @@ namespace CH_BACKEND.Migrations
                     b.HasKey("IdVenta")
                         .HasName("PK__Venta__BC1240BD26422425");
 
-                    b.HasIndex("IdPersona");
+                    b.HasIndex("IdUsuario");
 
-                    b.ToTable("Venta");
+                    b.ToTable("Venta", (string)null);
+                });
+
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.VentaEstadoHistorial", b =>
+                {
+                    b.Property<int>("IdHistorial")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id_historial");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHistorial"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("estado");
+
+                    b.Property<DateTime>("FechaCambio")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("fecha_cambio")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdVenta")
+                        .HasColumnType("int")
+                        .HasColumnName("id_venta");
+
+                    b.HasKey("IdHistorial")
+                        .HasName("PK__VentaEst__76E6C5029544A030");
+
+                    b.HasIndex("IdVenta");
+
+                    b.ToTable("VentaEstadoHistorial");
                 });
 
             modelBuilder.Entity("ProductoPromocion", b =>
@@ -765,6 +981,44 @@ namespace CH_BACKEND.Migrations
                     b.HasIndex("IdPromocion");
 
                     b.ToTable("Producto_Promocion", (string)null);
+                });
+
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Carrito", b =>
+                {
+                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Usuario", "IdUsuarioNavigation")
+                        .WithMany("Carritos")
+                        .HasForeignKey("IdUsuario")
+                        .IsRequired()
+                        .HasConstraintName("FK_Carrito_Usuario");
+
+                    b.Navigation("IdUsuarioNavigation");
+                });
+
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.CarritoDetalle", b =>
+                {
+                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Carrito", "IdCarritoNavigation")
+                        .WithMany("CarritoDetalles")
+                        .HasForeignKey("IdCarrito")
+                        .IsRequired()
+                        .HasConstraintName("FK_CarritoDetalle_Carrito");
+
+                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Producto", "IdProductoNavigation")
+                        .WithMany("CarritoDetalles")
+                        .HasForeignKey("IdProducto")
+                        .IsRequired()
+                        .HasConstraintName("FK_CarritoDetalle_Producto");
+
+                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Talla", "IdTallaNavigation")
+                        .WithMany("CarritoDetalles")
+                        .HasForeignKey("IdTalla")
+                        .IsRequired()
+                        .HasConstraintName("FK_CarritoDetalle_Talla");
+
+                    b.Navigation("IdCarritoNavigation");
+
+                    b.Navigation("IdProductoNavigation");
+
+                    b.Navigation("IdTallaNavigation");
                 });
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.DetalleVenta", b =>
@@ -812,6 +1066,17 @@ namespace CH_BACKEND.Migrations
                     b.Navigation("IdVentaNavigation");
                 });
 
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.DireccionEntrega", b =>
+                {
+                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Venta", "IdVentaNavigation")
+                        .WithMany("DireccionEntregas")
+                        .HasForeignKey("IdVenta")
+                        .IsRequired()
+                        .HasConstraintName("FK_DireccionEntrega_Venta");
+
+                    b.Navigation("IdVentaNavigation");
+                });
+
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.HistorialInventario", b =>
                 {
                     b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Producto", "IdProductoNavigation")
@@ -843,19 +1108,11 @@ namespace CH_BACKEND.Migrations
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Pago", b =>
                 {
-                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.MedioPago", "IdMedioPagoNavigation")
-                        .WithMany("Pagos")
-                        .HasForeignKey("IdMedioPago")
-                        .IsRequired()
-                        .HasConstraintName("FK__Pago__id_medio_p__6B24EA82");
-
                     b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Venta", "IdVentaNavigation")
                         .WithMany("Pagos")
                         .HasForeignKey("IdVenta")
                         .IsRequired()
                         .HasConstraintName("FK__Pago__id_venta__6A30C649");
-
-                    b.Navigation("IdMedioPagoNavigation");
 
                     b.Navigation("IdVentaNavigation");
                 });
@@ -902,18 +1159,30 @@ namespace CH_BACKEND.Migrations
                     b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Producto", "IdProductoNavigation")
                         .WithMany("TallaProductos")
                         .HasForeignKey("IdProducto")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK__Talla_Pro__id_pr__7E37BEF6");
+                        .HasConstraintName("FK_TallaProducto_Producto");
 
                     b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Talla", "IdTallaNavigation")
                         .WithMany("TallaProductos")
                         .HasForeignKey("IdTalla")
                         .IsRequired()
-                        .HasConstraintName("FK__Talla_Pro__id_ta__7F2BE32F");
+                        .HasConstraintName("FK_TallaProducto_Talla");
 
                     b.Navigation("IdProductoNavigation");
 
                     b.Navigation("IdTallaNavigation");
+                });
+
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.UsuarioDireccion", b =>
+                {
+                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Usuario", "IdUsuarioNavigation")
+                        .WithMany("UsuarioDireccions")
+                        .HasForeignKey("IdUsuario")
+                        .IsRequired()
+                        .HasConstraintName("FK_UsuarioDireccion_Usuario");
+
+                    b.Navigation("IdUsuarioNavigation");
                 });
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.UsuarioRol", b =>
@@ -937,13 +1206,24 @@ namespace CH_BACKEND.Migrations
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Venta", b =>
                 {
-                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Persona", "IdPersonaNavigation")
-                        .WithMany("Venta")
-                        .HasForeignKey("IdPersona")
+                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Usuario", "IdUsuarioNavigation")
+                        .WithMany("Ventas")
+                        .HasForeignKey("IdUsuario")
                         .IsRequired()
-                        .HasConstraintName("FK_Venta_Persona");
+                        .HasConstraintName("FK_Venta_Usuario");
 
-                    b.Navigation("IdPersonaNavigation");
+                    b.Navigation("IdUsuarioNavigation");
+                });
+
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.VentaEstadoHistorial", b =>
+                {
+                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Venta", "IdVentaNavigation")
+                        .WithMany("VentaEstadoHistorials")
+                        .HasForeignKey("IdVenta")
+                        .IsRequired()
+                        .HasConstraintName("FK_VentaEstadoHistorial_Venta");
+
+                    b.Navigation("IdVentaNavigation");
                 });
 
             modelBuilder.Entity("ProductoPromocion", b =>
@@ -961,6 +1241,11 @@ namespace CH_BACKEND.Migrations
                         .HasConstraintName("FK__Producto___id_pr__778AC167");
                 });
 
+            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Carrito", b =>
+                {
+                    b.Navigation("CarritoDetalles");
+                });
+
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Categoria", b =>
                 {
                     b.Navigation("Productos");
@@ -968,18 +1253,10 @@ namespace CH_BACKEND.Migrations
                     b.Navigation("SubCategoria");
                 });
 
-            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.MedioPago", b =>
-                {
-                    b.Navigation("Pagos");
-                });
-
-            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Persona", b =>
-                {
-                    b.Navigation("Venta");
-                });
-
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Producto", b =>
                 {
+                    b.Navigation("CarritoDetalles");
+
                     b.Navigation("DetalleVenta");
 
                     b.Navigation("Devoluciones");
@@ -1003,6 +1280,8 @@ namespace CH_BACKEND.Migrations
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Talla", b =>
                 {
+                    b.Navigation("CarritoDetalles");
+
                     b.Navigation("TallaProductos");
                 });
 
@@ -1015,9 +1294,15 @@ namespace CH_BACKEND.Migrations
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Usuario", b =>
                 {
+                    b.Navigation("Carritos");
+
                     b.Navigation("HistorialInventarios");
 
+                    b.Navigation("UsuarioDireccions");
+
                     b.Navigation("UsuarioRols");
+
+                    b.Navigation("Ventas");
                 });
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Venta", b =>
@@ -1026,7 +1311,11 @@ namespace CH_BACKEND.Migrations
 
                     b.Navigation("Devoluciones");
 
+                    b.Navigation("DireccionEntregas");
+
                     b.Navigation("Pagos");
+
+                    b.Navigation("VentaEstadoHistorials");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,11 +15,18 @@ public partial class _DbContextCalzadosHuancayo : DbContext
     {
     }
 
+    public virtual DbSet<Carrito> Carritos { get; set; }
+
+    public virtual DbSet<CarritoDetalle> CarritoDetalles { get; set; }
+
     public virtual DbSet<Categoria> Categoria { get; set; }
 
     public virtual DbSet<DetalleVenta> DetalleVenta { get; set; }
 
     public virtual DbSet<Devolucion> Devoluciones { get; set; }
+
+
+    public virtual DbSet<DireccionEntrega> DireccionEntregas { get; set; }
 
     public virtual DbSet<Empresa> Empresas { get; set; }
 
@@ -49,16 +56,46 @@ public partial class _DbContextCalzadosHuancayo : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
+    public virtual DbSet<UsuarioDireccion> UsuarioDireccions { get; set; }
+
     public virtual DbSet<UsuarioRol> UsuarioRols { get; set; }
 
-    public virtual DbSet<Venta> Venta { get; set; }
+    public virtual DbSet<VentaEstadoHistorial> VentaEstadoHistorials { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-6HLGI3JI\\SQLEXPRESS;Initial Catalog=Calzados;Integrated Security=True;TrustServerCertificate=True");
+    public virtual DbSet<Venta> Ventas { get; set; }
+
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Carrito>(entity =>
+        {
+            entity.HasKey(e => e.IdCarrito).HasName("PK__Carrito__83A2AD9C69CB431D");
+
+            entity.Property(e => e.FechaCreacion).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Carritos)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Carrito_Usuario");
+        });
+
+        modelBuilder.Entity<CarritoDetalle>(entity =>
+        {
+            entity.HasKey(e => new { e.IdCarrito, e.IdProducto, e.IdTalla }).HasName("PK__Carrito___7090831C4615DB4B");
+
+            entity.HasOne(d => d.IdCarritoNavigation).WithMany(p => p.CarritoDetalles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CarritoDetalle_Carrito");
+
+            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.CarritoDetalles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CarritoDetalle_Producto");
+
+            entity.HasOne(d => d.IdTallaNavigation).WithMany(p => p.CarritoDetalles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CarritoDetalle_Talla");
+        });
+
         modelBuilder.Entity<Categoria>(entity =>
         {
             entity.HasKey(e => e.IdCategoria).HasName("PK__Categori__CD54BC5A95EA531F");
@@ -90,6 +127,15 @@ public partial class _DbContextCalzadosHuancayo : DbContext
             entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.Devoluciones)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Devolucio__id_ve__6E01572D");
+        });
+
+        modelBuilder.Entity<DireccionEntrega>(entity =>
+        {
+            entity.HasKey(e => e.IdDireccionEntrega).HasName("PK__Direccio__EA452087DE9D7120");
+
+            entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.DireccionEntregas)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DireccionEntrega_Venta");
         });
 
         modelBuilder.Entity<Empresa>(entity =>
@@ -126,14 +172,16 @@ public partial class _DbContextCalzadosHuancayo : DbContext
         {
             entity.HasKey(e => e.IdPago).HasName("PK__Pago__0941B074510023E3");
 
-            entity.HasOne(d => d.IdMedioPagoNavigation).WithMany(p => p.Pagos)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Pago__id_medio_p__6B24EA82");
+            // Se elimina la relación con MedioPago:
+            // entity.HasOne(d => d.IdMedioPagoNavigation).WithMany(p => p.Pagos)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK__Pago__id_medio_p__6B24EA82");
 
             entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.Pagos)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Pago__id_venta__6A30C649");
         });
+
 
         modelBuilder.Entity<Persona>(entity =>
         {
@@ -202,15 +250,11 @@ public partial class _DbContextCalzadosHuancayo : DbContext
 
         modelBuilder.Entity<TallaProducto>(entity =>
         {
-            entity.HasKey(e => new { e.IdProducto, e.IdTalla }).HasName("PK__Talla_Pr__3322E80EFD5B2D18");
-
-            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.TallaProductos)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Talla_Pro__id_pr__7E37BEF6");
+            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.TallaProductos).HasConstraintName("FK_TallaProducto_Producto");
 
             entity.HasOne(d => d.IdTallaNavigation).WithMany(p => p.TallaProductos)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Talla_Pro__id_ta__7F2BE32F");
+                .HasConstraintName("FK_TallaProducto_Talla");
         });
 
         modelBuilder.Entity<UnidadMedida>(entity =>
@@ -221,6 +265,17 @@ public partial class _DbContextCalzadosHuancayo : DbContext
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__4E3E04AD691DD7B6");
+        });
+
+        modelBuilder.Entity<UsuarioDireccion>(entity =>
+        {
+            entity.HasKey(e => e.IdDireccion).HasName("PK__UsuarioD__25C35D073F491800");
+
+            entity.Property(e => e.FechaRegistro).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.UsuarioDireccions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UsuarioDireccion_Usuario");
         });
 
         modelBuilder.Entity<UsuarioRol>(entity =>
@@ -236,13 +291,26 @@ public partial class _DbContextCalzadosHuancayo : DbContext
                 .HasConstraintName("FK__Usuario_R__id_us__5CD6CB2B");
         });
 
+        modelBuilder.Entity<VentaEstadoHistorial>(entity =>
+        {
+            entity.HasKey(e => e.IdHistorial).HasName("PK__VentaEst__76E6C5029544A030");
+
+            entity.Property(e => e.FechaCambio).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.VentaEstadoHistorials)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VentaEstadoHistorial_Venta");
+        });
+
         modelBuilder.Entity<Venta>(entity =>
         {
+            entity.ToTable("Venta"); // Especifica el nombre correcto de la tabla
             entity.HasKey(e => e.IdVenta).HasName("PK__Venta__BC1240BD26422425");
 
-            entity.HasOne(d => d.IdPersonaNavigation).WithMany(p => p.Venta)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Venta_Persona");
+            entity.HasOne(d => d.IdUsuarioNavigation)
+                  .WithMany(p => p.Ventas)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_Venta_Usuario");
         });
 
 

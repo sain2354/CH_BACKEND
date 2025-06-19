@@ -1,8 +1,107 @@
 [
   {
+    "ContainingType": "CH_BACKEND.Controllers.CarritoController",
+    "Method": "ObtenerCarritos",
+    "RelativePath": "api/Carrito",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Models.CarritoResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.CarritoController",
+    "Method": "CrearCarrito",
+    "RelativePath": "api/Carrito",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.CarritoRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.CarritoController",
+    "Method": "ObtenerCarritoPorId",
+    "RelativePath": "api/Carrito/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CH_BACKEND.Models.CarritoResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.CarritoController",
+    "Method": "ActualizarCarrito",
+    "RelativePath": "api/Carrito/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.CarritoRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.CarritoController",
+    "Method": "EliminarCarrito",
+    "RelativePath": "api/Carrito/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CategoriaController",
     "Method": "ObtenerCategorias",
-    "RelativePath": "api/categorias",
+    "RelativePath": "api/Categoria",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -22,7 +121,7 @@
   {
     "ContainingType": "CategoriaController",
     "Method": "AgregarCategoria",
-    "RelativePath": "api/categorias",
+    "RelativePath": "api/Categoria",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -38,7 +137,7 @@
   {
     "ContainingType": "CategoriaController",
     "Method": "ObtenerCategoriaPorId",
-    "RelativePath": "api/categorias/{id}",
+    "RelativePath": "api/Categoria/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -64,7 +163,7 @@
   {
     "ContainingType": "CategoriaController",
     "Method": "ActualizarCategoria",
-    "RelativePath": "api/categorias/{id}",
+    "RelativePath": "api/Categoria/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -85,7 +184,7 @@
   {
     "ContainingType": "CategoriaController",
     "Method": "EliminarCategoria",
-    "RelativePath": "api/categorias/{id}",
+    "RelativePath": "api/Categoria/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -108,7 +207,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.DBCalzadosHuancayo.DetalleVenta, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Models.DetalleVentaResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -127,24 +226,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "detalleVenta",
-        "Type": "CH_BACKEND.DBCalzadosHuancayo.DetalleVenta",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CH_BACKEND.Controllers.DetalleVentaController",
-    "Method": "Actualizar",
-    "RelativePath": "api/DetalleVenta",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "detalleVenta",
-        "Type": "CH_BACKEND.DBCalzadosHuancayo.DetalleVenta",
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.DetalleVentaRequest",
         "IsRequired": true
       }
     ],
@@ -166,7 +249,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "CH_BACKEND.DBCalzadosHuancayo.DetalleVenta",
+        "Type": "CH_BACKEND.Models.DetalleVentaResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -175,6 +258,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.DetalleVentaController",
+    "Method": "Actualizar",
+    "RelativePath": "api/DetalleVenta/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.DetalleVentaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CH_BACKEND.Controllers.DetalleVentaController",
@@ -223,6 +327,115 @@
     "Method": "ObtenerPorId",
     "RelativePath": "api/Devolucion/{id}",
     "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.DireccionEntregaController",
+    "Method": "GetAll",
+    "RelativePath": "api/DireccionEntrega",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Models.DireccionEntregaResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.DireccionEntregaController",
+    "Method": "Create",
+    "RelativePath": "api/DireccionEntrega",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.DireccionEntregaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CH_BACKEND.Models.DireccionEntregaResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.DireccionEntregaController",
+    "Method": "GetOne",
+    "RelativePath": "api/DireccionEntrega/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CH_BACKEND.Models.DireccionEntregaResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.DireccionEntregaController",
+    "Method": "Update",
+    "RelativePath": "api/DireccionEntrega/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.DireccionEntregaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.DireccionEntregaController",
+    "Method": "Delete",
+    "RelativePath": "api/DireccionEntrega/{id}",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -498,7 +711,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[MedioPagoResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Models.MedioPagoResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -518,7 +731,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "MedioPagoResponse",
+        "Type": "CH_BACKEND.Models.MedioPagoRequest",
         "IsRequired": true
       }
     ],
@@ -540,7 +753,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "MedioPagoResponse",
+        "Type": "CH_BACKEND.Models.MedioPagoResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -565,7 +778,7 @@
       },
       {
         "Name": "request",
-        "Type": "MedioPagoResponse",
+        "Type": "CH_BACKEND.Models.MedioPagoRequest",
         "IsRequired": true
       }
     ],
@@ -650,6 +863,32 @@
     ]
   },
   {
+    "ContainingType": "CH_BACKEND.Controllers.PagoController",
+    "Method": "GenerarPreferencia",
+    "RelativePath": "api/Pago/GenerarPreferencia",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.GenerarPreferenciaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.PagoController",
+    "Method": "Webhook",
+    "RelativePath": "api/Pago/Webhook",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CH_BACKEND.Controllers.PersonaController",
     "Method": "ObtenerTodos",
     "RelativePath": "api/Persona",
@@ -657,17 +896,7 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Response.PersonaResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CH_BACKEND.Controllers.PersonaController",
@@ -699,17 +928,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "CH_BACKEND.Response.PersonaResponse",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CH_BACKEND.Controllers.PersonaController",
@@ -755,18 +974,14 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
+    "Parameters": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[ProductoResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
+        "Name": "cat",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
-    ]
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CH_BACKEND.Controllers.ProductoController",
@@ -843,6 +1058,82 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.ProductoController",
+    "Method": "AgregarProductoConArchivo",
+    "RelativePath": "api/Producto/createWithFile",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdCategoria",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdSubCategoria",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CodigoBarra",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Nombre",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Stock",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "StockMinimo",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "PrecioVenta",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "PrecioCompra",
+        "Type": "System.Nullable\u00601[[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdUnidadMedida",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Estado",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "Foto",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -1166,6 +1457,32 @@
   },
   {
     "ContainingType": "CH_BACKEND.Controllers.TallaController",
+    "Method": "CrearTalla",
+    "RelativePath": "api/Talla",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.TallaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CH_BACKEND.Models.TallaResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.TallaController",
     "Method": "ObtenerTallaPorId",
     "RelativePath": "api/Talla/{id}",
     "HttpMethod": "GET",
@@ -1189,6 +1506,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.TallaController",
+    "Method": "ActualizarTalla",
+    "RelativePath": "api/Talla/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.TallaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CH_BACKEND.Controllers.TallaProductoController",
@@ -1305,6 +1643,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CH_BACKEND.Controllers.TallaProductoController",
+    "Method": "ObtenerTallasPorProducto",
+    "RelativePath": "api/TallaProducto/porProducto/{idProducto}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idProducto",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Models.TallaProductoResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "CH_BACKEND.Controllers.UnidadMedidaController",
     "Method": "ObtenerUnidadesMedida",
     "RelativePath": "api/UnidadMedida",
@@ -1341,6 +1705,141 @@
     "ReturnTypes": [
       {
         "Type": "CH_BACKEND.Models.UnidadMedidaResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioDireccionController",
+    "Method": "GetAll",
+    "RelativePath": "api/UsuarioDireccion",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Models.UsuarioDireccionResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioDireccionController",
+    "Method": "Create",
+    "RelativePath": "api/UsuarioDireccion",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.UsuarioDireccionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CH_BACKEND.Models.UsuarioDireccionResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioDireccionController",
+    "Method": "GetOne",
+    "RelativePath": "api/UsuarioDireccion/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CH_BACKEND.Models.UsuarioDireccionResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioDireccionController",
+    "Method": "Update",
+    "RelativePath": "api/UsuarioDireccion/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.UsuarioDireccionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioDireccionController",
+    "Method": "Delete",
+    "RelativePath": "api/UsuarioDireccion/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioDireccionController",
+    "Method": "GetByUser",
+    "RelativePath": "api/UsuarioDireccion/usuario/{idUsuario}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idUsuario",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Models.UsuarioDireccionResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1439,6 +1938,133 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioController",
+    "Method": "GetUsuarios",
+    "RelativePath": "api/usuarios",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioController",
+    "Method": "CrearUsuario",
+    "RelativePath": "api/usuarios",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.UsuarioRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioController",
+    "Method": "GetUsuario",
+    "RelativePath": "api/usuarios/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioController",
+    "Method": "ActualizarUsuario",
+    "RelativePath": "api/usuarios/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.UsuarioRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioController",
+    "Method": "EliminarUsuario",
+    "RelativePath": "api/usuarios/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioController",
+    "Method": "LoginConGoogle",
+    "RelativePath": "api/usuarios/googleLogin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.GoogleLoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioController",
+    "Method": "Login",
+    "RelativePath": "api/usuarios/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CH_BACKEND.Controllers.UsuarioController",
+    "Method": "SyncUsuario",
+    "RelativePath": "api/usuarios/sync",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CH_BACKEND.Models.UsuarioRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CH_BACKEND.Controllers.VentaController",
     "Method": "ObtenerVentas",
     "RelativePath": "api/Venta",
@@ -1448,7 +2074,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[VentaResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[CH_BACKEND.Models.VentaResponse, CH_BACKEND, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1490,7 +2116,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "VentaResponse",
+        "Type": "CH_BACKEND.Models.VentaResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",

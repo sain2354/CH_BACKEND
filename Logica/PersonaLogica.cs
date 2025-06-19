@@ -53,9 +53,10 @@ namespace CH_BACKEND.Logica
             };
         }
 
-        public async Task<bool> Crear(PersonaRequest request)
+        // Ahora devolvemos PersonaResponse en lugar de bool
+        public async Task<PersonaResponse> Crear(PersonaRequest request)
         {
-            var persona = new Persona
+            var personaEntidad = new Persona
             {
                 Nombre = request.Nombre,
                 Telefono = request.Telefono,
@@ -67,24 +68,51 @@ namespace CH_BACKEND.Logica
                 NumeroDocumento = request.NumeroDocumento
             };
 
-            return await _personaRepositorio.Crear(persona);
+            var creado = await _personaRepositorio.Crear(personaEntidad);
+
+            return new PersonaResponse
+            {
+                IdPersona = creado.IdPersona,
+                Nombre = creado.Nombre,
+                Telefono = creado.Telefono,
+                Correo = creado.Correo,
+                Direccion = creado.Direccion,
+                FechaRegistro = creado.FechaRegistro,
+                TipoPersona = creado.TipoPersona,
+                TipoDocumento = creado.TipoDocumento,
+                NumeroDocumento = creado.NumeroDocumento
+            };
         }
 
-        public async Task<bool> Actualizar(int id, PersonaRequest request)
+        // Devolvemos PersonaResponse tras actualizar
+        public async Task<PersonaResponse?> Actualizar(int id, PersonaRequest request)
         {
-            var persona = await _personaRepositorio.ObtenerPorId(id);
-            if (persona == null) return false;
+            var personaEntidad = await _personaRepositorio.ObtenerPorId(id);
+            if (personaEntidad == null) return null;
 
-            persona.Nombre = request.Nombre;
-            persona.Telefono = request.Telefono;
-            persona.Correo = request.Correo;
-            persona.Direccion = request.Direccion;
-            persona.FechaRegistro = request.FechaRegistro;
-            persona.TipoPersona = request.TipoPersona;
-            persona.TipoDocumento = request.TipoDocumento;
-            persona.NumeroDocumento = request.NumeroDocumento;
+            personaEntidad.Nombre = request.Nombre;
+            personaEntidad.Telefono = request.Telefono;
+            personaEntidad.Correo = request.Correo;
+            personaEntidad.Direccion = request.Direccion;
+            personaEntidad.FechaRegistro = request.FechaRegistro;
+            personaEntidad.TipoPersona = request.TipoPersona;
+            personaEntidad.TipoDocumento = request.TipoDocumento;
+            personaEntidad.NumeroDocumento = request.NumeroDocumento;
 
-            return await _personaRepositorio.Actualizar(persona);
+            var actualizado = await _personaRepositorio.Actualizar(personaEntidad);
+
+            return new PersonaResponse
+            {
+                IdPersona = actualizado.IdPersona,
+                Nombre = actualizado.Nombre,
+                Telefono = actualizado.Telefono,
+                Correo = actualizado.Correo,
+                Direccion = actualizado.Direccion,
+                FechaRegistro = actualizado.FechaRegistro,
+                TipoPersona = actualizado.TipoPersona,
+                TipoDocumento = actualizado.TipoDocumento,
+                NumeroDocumento = actualizado.NumeroDocumento
+            };
         }
 
         public async Task<bool> Eliminar(int id)

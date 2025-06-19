@@ -16,12 +16,18 @@ namespace CH_BACKEND.Repositories
 
         public List<Pago> ObtenerTodos()
         {
-            return _context.Pagos.Include(p => p.IdVentaNavigation).Include(p => p.IdMedioPagoNavigation).ToList();
+            return _context.Pagos
+                // Se elimina la inclusión de MedioPagoNavigation
+                .Include(p => p.IdVentaNavigation)
+                .ToList();
         }
 
         public Pago? ObtenerPorId(int id)
         {
-            return _context.Pagos.Include(p => p.IdVentaNavigation).Include(p => p.IdMedioPagoNavigation).FirstOrDefault(p => p.IdPago == id);
+            return _context.Pagos
+                // Se elimina la inclusión de MedioPagoNavigation
+                .Include(p => p.IdVentaNavigation)
+                .FirstOrDefault(p => p.IdPago == id);
         }
 
         public void Agregar(Pago pago)

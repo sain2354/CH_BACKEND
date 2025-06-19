@@ -23,5 +23,19 @@ namespace CH_BACKEND.Repositories
         {
             return await _context.Tallas.FindAsync(id);
         }
+
+        // NUEVO: Crear talla
+        public async Task CrearTalla(Talla talla)
+        {
+            _context.Tallas.Add(talla);
+            await _context.SaveChangesAsync();
+        }
+
+        // NUEVO: Actualizar talla
+        public async Task ActualizarTalla(Talla talla)
+        {
+            _context.Tallas.Update(talla);
+            await _context.SaveChangesAsync();
+        }
     }
 }
