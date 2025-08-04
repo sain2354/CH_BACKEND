@@ -1,6 +1,6 @@
 ﻿using CH_BACKEND.DBCalzadosHuancayo;
-using CH_BACKEND.Repositories;
 using CH_BACKEND.Models;
+using CH_BACKEND.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,84 +9,61 @@ namespace CH_BACKEND.Logica
 {
     public class TallaProductoLogica
     {
-        private readonly TallaProductoRepository _tallaProductoRepository;
+        private readonly TallaProductoRepository _repo;
 
-        public TallaProductoLogica(TallaProductoRepository tallaProductoRepository)
+        public TallaProductoLogica(TallaProductoRepository repo)
         {
-            _tallaProductoRepository = tallaProductoRepository;
+            _repo = repo;
         }
 
-        public async Task<List<TallaProductoResponse>> ObtenerTallaProductos()
-        {
-            var lista = await _tallaProductoRepository.ObtenerTallaProductos();
-            return lista.Select(tp => new TallaProductoResponse
-            {
-                IdProducto = tp.IdProducto,
-                IdTalla = tp.IdTalla,
-                Stock = tp.Stock
-            }).ToList();
-        }
-
-        // NUEVO: Obtener tallas de un producto
         public async Task<List<TallaProductoResponse>> ObtenerTallasPorProducto(int idProducto)
         {
-            var lista = await _tallaProductoRepository.ObtenerTallasPorProducto(idProducto);
-
-            // Mapeamos a TallaProductoResponse
-            return lista.Select(tp => new TallaProductoResponse
+            var list = await _repo.ObtenerTallasPorProducto(idProducto);
+            return list.Select(tp => new TallaProductoResponse
             {
                 IdProducto = tp.IdProducto,
-                IdTalla = tp.IdTalla,
+                Usa = tp.Usa,
+                Eur = tp.Eur,
+                Cm = tp.Cm,
                 Stock = tp.Stock
             }).ToList();
         }
 
-        public async Task<TallaProductoResponse?> ObtenerTallaProductoPorId(int idProducto, int idTalla)
+        public async Task<TallaProductoResponse> CrearTallaProducto(TallaProductoRequest req)
         {
-            var tallaProducto = await _tallaProductoRepository.ObtenerTallaProductoPorId(idProducto, idTalla);
-            if (tallaProducto == null) return null;
-
+            var entity = new TallaProducto
+            {
+                IdProducto = req.IdProducto,
+                Usa = req.Usa,
+                Eur = req.Eur,
+                Cm = req.Cm,
+                Stock = req.Stock
+            };
+            await _repo.CrearTallaProducto(entity);
             return new TallaProductoResponse
             {
-                IdProducto = tallaProducto.IdProducto,
-                IdTalla = tallaProducto.IdTalla,
-                Stock = tallaProducto.Stock
+                IdProducto = entity.IdProducto,
+                Usa = entity.Usa,
+                Eur = entity.Eur,
+                Cm = entity.Cm,
+                Stock = entity.Stock
             };
         }
 
-        public async Task<TallaProductoResponse> CrearTallaProducto(TallaProductoRequest request)
+        public async Task<bool> ActualizarTallaProducto(int idProducto, int usa, TallaProductoRequest req)
         {
-            var nuevo = new TallaProducto
-            {
-                IdProducto = request.IdProducto,
-                IdTalla = request.IdTalla,
-                Stock = request.Stock
-            };
-
-            await _tallaProductoRepository.CrearTallaProducto(nuevo);
-
-            return new TallaProductoResponse
-            {
-                IdProducto = nuevo.IdProducto,
-                IdTalla = nuevo.IdTalla,
-                Stock = nuevo.Stock
-            };
-        }
-
-        public async Task<bool> ActualizarTallaProducto(int idProducto, int idTalla, TallaProductoRequest request)
-        {
-            var tallaProducto = await _tallaProductoRepository.ObtenerTallaProductoPorId(idProducto, idTalla);
-            if (tallaProducto == null) return false;
-
-            tallaProducto.Stock = request.Stock;
-            await _tallaProductoRepository.ActualizarTallaProducto(tallaProducto);
-
+            var entity = await _repo.ObtenerTallaProductoPorId(idProducto, usa);
+            if (entity == null) return false;
+            entity.Eur = req.Eur;
+            entity.Cm = req.Cm;
+            entity.Stock = req.Stock;
+            await _repo.ActualizarTallaProducto(entity);
             return true;
         }
 
-        public async Task<bool> EliminarTallaProducto(int idProducto, int idTalla)
+        public async Task<bool> EliminarTallaProducto(int idProducto, int usa)
         {
-            return await _tallaProductoRepository.EliminarTallaProducto(idProducto, idTalla);
+            return await _repo.EliminarTallaProducto(idProducto, usa);
         }
     }
 }

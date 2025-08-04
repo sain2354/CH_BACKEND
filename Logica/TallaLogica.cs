@@ -1,6 +1,7 @@
-﻿using CH_BACKEND.DBCalzadosHuancayo;
-using CH_BACKEND.Repositories;
+﻿
+using CH_BACKEND.DBCalzadosHuancayo;
 using CH_BACKEND.Models;
+using CH_BACKEND.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,61 +10,69 @@ namespace CH_BACKEND.Logica
 {
     public class TallaLogica
     {
-        private readonly TallaRepository _tallaRepository;
+        private readonly TallaRepository _repo;
 
-        public TallaLogica(TallaRepository tallaRepository)
+        public TallaLogica(TallaRepository repo)
         {
-            _tallaRepository = tallaRepository;
+            _repo = repo;
         }
 
-        public async Task<List<TallaResponse>> ObtenerTallas()
+        public async Task<List<TallaResponse>> ObtenerTallas(string? categoria)
         {
-            var tallas = await _tallaRepository.ObtenerTallas();
-            return tallas.Select(t => new TallaResponse
+            var list = await _repo.ObtenerTallas(categoria);
+            return list.Select(t => new TallaResponse
             {
                 IdTalla = t.IdTalla,
-                Descripcion = t.Descripcion
+                Categoria = t.Categoria,
+                Usa = t.Usa,
+                Eur = t.Eur,
+                Cm = t.Cm
             }).ToList();
         }
 
         public async Task<TallaResponse?> ObtenerTallaPorId(int id)
         {
-            var talla = await _tallaRepository.ObtenerTallaPorId(id);
-            if (talla == null) return null;
-
+            var t = await _repo.ObtenerTallaPorId(id);
+            if (t == null) return null;
             return new TallaResponse
             {
-                IdTalla = talla.IdTalla,
-                Descripcion = talla.Descripcion
+                IdTalla = t.IdTalla,
+                Categoria = t.Categoria,
+                Usa = t.Usa,
+                Eur = t.Eur,
+                Cm = t.Cm
             };
         }
 
-        // NUEVO: Crear Talla
-        public async Task<TallaResponse> CrearTalla(TallaRequest request)
+        public async Task<TallaResponse> CrearTalla(TallaRequest req)
         {
-            var nuevaTalla = new Talla
+            var entity = new Talla
             {
-                Descripcion = request.Descripcion
+                Categoria = req.Categoria,
+                Usa = req.Usa,
+                Eur = req.Eur,
+                Cm = req.Cm
             };
-
-            await _tallaRepository.CrearTalla(nuevaTalla);
-
+            await _repo.CrearTalla(entity);
             return new TallaResponse
             {
-                IdTalla = nuevaTalla.IdTalla,
-                Descripcion = nuevaTalla.Descripcion
+                IdTalla = entity.IdTalla,
+                Categoria = entity.Categoria,
+                Usa = entity.Usa,
+                Eur = entity.Eur,
+                Cm = entity.Cm
             };
         }
 
-        // NUEVO: Actualizar Talla
-        public async Task<bool> ActualizarTalla(int id, TallaRequest request)
+        public async Task<bool> ActualizarTalla(int id, TallaRequest req)
         {
-            var talla = await _tallaRepository.ObtenerTallaPorId(id);
-            if (talla == null) return false;
-
-            talla.Descripcion = request.Descripcion;
-            await _tallaRepository.ActualizarTalla(talla);
-
+            var entity = await _repo.ObtenerTallaPorId(id);
+            if (entity == null) return false;
+            entity.Categoria = req.Categoria;
+            entity.Usa = req.Usa;
+            entity.Eur = req.Eur;
+            entity.Cm = req.Cm;
+            await _repo.ActualizarTalla(entity);
             return true;
         }
     }

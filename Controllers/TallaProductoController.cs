@@ -10,71 +10,50 @@ namespace CH_BACKEND.Controllers
     [ApiController]
     public class TallaProductoController : ControllerBase
     {
-        private readonly TallaProductoLogica _tallaProductoLogica;
+        private readonly TallaProductoLogica _logic;
 
-        public TallaProductoController(TallaProductoLogica tallaProductoLogica)
+        public TallaProductoController(TallaProductoLogica logic)
         {
-            _tallaProductoLogica = tallaProductoLogica;
+            _logic = logic;
         }
 
-        // GET /api/TallaProducto
-        [HttpGet]
-        public async Task<ActionResult<List<TallaProductoResponse>>> ObtenerTallaProductos()
-        {
-            var lista = await _tallaProductoLogica.ObtenerTallaProductos();
-            return Ok(lista);
-        }
-
-        // NUEVO: GET /api/TallaProducto/porProducto/{idProducto}
+        // GET /api/TallaProducto/porProducto/{idProducto}
         [HttpGet("porProducto/{idProducto}")]
         public async Task<ActionResult<List<TallaProductoResponse>>> ObtenerTallasPorProducto(int idProducto)
         {
-            var tallas = await _tallaProductoLogica.ObtenerTallasPorProducto(idProducto);
+            var tallas = await _logic.ObtenerTallasPorProducto(idProducto);
             if (tallas == null || tallas.Count == 0)
-                return NotFound($"No hay tallas para el producto con ID {idProducto}");
-
+                return NotFound($"No hay tallas para el producto {idProducto}");
             return Ok(tallas);
-        }
-
-        // GET /api/TallaProducto/{idProducto}/{idTalla}
-        [HttpGet("{idProducto}/{idTalla}")]
-        public async Task<ActionResult<TallaProductoResponse>> ObtenerTallaProductoPorId(int idProducto, int idTalla)
-        {
-            var tallaProducto = await _tallaProductoLogica.ObtenerTallaProductoPorId(idProducto, idTalla);
-            if (tallaProducto == null)
-                return NotFound(new { mensaje = "No encontrado" });
-            return Ok(tallaProducto);
         }
 
         // POST /api/TallaProducto
         [HttpPost]
-        public async Task<ActionResult> CrearTallaProducto([FromBody] TallaProductoRequest request)
+        public async Task<ActionResult> Crear([FromBody] TallaProductoRequest req)
         {
-            var nuevo = await _tallaProductoLogica.CrearTallaProducto(request);
+            var creado = await _logic.CrearTallaProducto(req);
             return CreatedAtAction(
-                nameof(ObtenerTallaProductoPorId),
-                new { idProducto = nuevo.IdProducto, idTalla = nuevo.IdTalla },
-                nuevo
+                nameof(ObtenerTallasPorProducto),
+                new { idProducto = creado.IdProducto },
+                creado
             );
-          }
+        }
 
-        // PUT /api/TallaProducto/{idProducto}/{idTalla}
-        [HttpPut("{idProducto}/{idTalla}")]
-        public async Task<ActionResult> ActualizarTallaProducto(int idProducto, int idTalla, [FromBody] TallaProductoRequest request)
+        // PUT /api/TallaProducto/{idProducto}/{usa}
+        [HttpPut("{idProducto}/{usa}")]
+        public async Task<ActionResult> Actualizar(int idProducto, int usa, [FromBody] TallaProductoRequest req)
         {
-            var resultado = await _tallaProductoLogica.ActualizarTallaProducto(idProducto, idTalla, request);
-            if (!resultado)
-                return NotFound(new { mensaje = "No encontrado" });
+            var ok = await _logic.ActualizarTallaProducto(idProducto, usa, req);
+            if (!ok) return NotFound();
             return NoContent();
         }
 
-        // DELETE /api/TallaProducto/{idProducto}/{idTalla}
-        [HttpDelete("{idProducto}/{idTalla}")]
-        public async Task<ActionResult> EliminarTallaProducto(int idProducto, int idTalla)
+        // DELETE /api/TallaProducto/{idProducto}/{usa}
+        [HttpDelete("{idProducto}/{usa}")]
+        public async Task<ActionResult> Eliminar(int idProducto, int usa)
         {
-            var resultado = await _tallaProductoLogica.EliminarTallaProducto(idProducto, idTalla);
-            if (!resultado)
-                return NotFound(new { mensaje = "No encontrado" });
+            var ok = await _logic.EliminarTallaProducto(idProducto, usa);
+            if (!ok) return NotFound();
             return NoContent();
         }
     }

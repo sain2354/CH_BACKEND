@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 using CH_BACKEND.DBCalzadosHuancayo;
 using CH_BACKEND.Logica;
 using CH_BACKEND.Repositories;
@@ -13,26 +17,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2) Configurar CORS (Permitir cualquier origen)
+// 2) Configurar CORS (Permitir cualquier origen en dev)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
 
-// 3) Registrar DbContext (verifica que la cadena sea correcta)
+// 3) Registrar DbContext
 builder.Services.AddDbContext<_DbContextCalzadosHuancayo>(options =>
     options.UseSqlServer(
         "workstation id=Calzados.mssql.somee.com;packet size=4096;user id=pepe12_SQLLogin_2;pwd=zhl9uctlun;data source=Calzados.mssql.somee.com;persist security info=False;initial catalog=Calzados;TrustServerCertificate=True"
     )
 );
 
-// 4) Registrar servicios y lógica
+
+/// 4) Registrar servicios y lógica (tal como lo tenías)
 builder.Services.AddScoped<VentaRepositorio>();
 builder.Services.AddScoped<VentaLogica>();
 builder.Services.AddScoped<CategoriaRepositorio>();
@@ -68,8 +73,6 @@ builder.Services.AddScoped<UnidadMedidaRepository>();
 builder.Services.AddScoped<UnidadMedidaLogica>();
 builder.Services.AddScoped<UsuarioRolRepositorio>();
 builder.Services.AddScoped<UsuarioRolLogica>();
-builder.Services.AddScoped<VentaRepositorio>();
-builder.Services.AddScoped<VentaLogica>();
 builder.Services.AddScoped<CarritoRepositorio>();
 builder.Services.AddScoped<CarritoLogica>();
 builder.Services.AddScoped<UsuarioRepository>();
@@ -79,22 +82,89 @@ builder.Services.AddScoped<UsuarioDireccionLogica>();
 builder.Services.AddScoped<DireccionEntregaRepository>();
 builder.Services.AddScoped<DireccionEntregaLogica>();
 
+
 var app = builder.Build();
 
-// 5) Habilitar servir archivos estáticos desde wwwroot (si Somee lo permite)
+// 5) Developer Exception Page para ver errores de arranque
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// 6) Servir archivos estáticos de wwwroot (incluye css, js, etc.)
 app.UseStaticFiles();
 
-// 6) Swagger
-app.UseSwagger();
-app.UseSwaggerUI();
+// 7) Servir imágenes desde wwwroot/images
+var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+if (Directory.Exists(imagesPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(imagesPath),
+        RequestPath = "/images"
+    });
+}
 
-// 7) (Opcional) Redirección HTTPS. Si Somee no soporta HTTPS, coméntalo.
-// app.UseHttpsRedirection();
+// 7.1) Servir archivos estáticos de wwwroot/uploads
+var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+if (Directory.Exists(uploadsPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(uploadsPath),
+        RequestPath = "/uploads"
+    });
+}
 
-// 8) CORS
+// 8) Enrutamiento
+app.UseRouting();
+
+// 9) Middleware global de excepción para exponer InnerException
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var feature = context.Features.Get<IExceptionHandlerFeature>();
+        if (feature?.Error != null)
+        {
+            var ex = feature.Error;
+            while (ex.InnerException != null)
+                ex = ex.InnerException;
+            var detalle = ex.Message;
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.ContentType = "text/plain";
+            await context.Response.WriteAsync($"Error interno (detalle): {detalle}");
+        }
+    });
+});
+
+// 10) Aplicar CORS
 app.UseCors("AllowAll");
 
+// 11) Autenticación/Autorización (si aplica)
 app.UseAuthorization();
+
+// 12) Mapear controladores
 app.MapControllers();
 
 app.Run();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

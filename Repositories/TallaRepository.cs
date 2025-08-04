@@ -1,6 +1,8 @@
-﻿using CH_BACKEND.DBCalzadosHuancayo;
+﻿
+using CH_BACKEND.DBCalzadosHuancayo;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CH_BACKEND.Repositories
@@ -14,24 +16,25 @@ namespace CH_BACKEND.Repositories
             _context = context;
         }
 
-        public async Task<List<Talla>> ObtenerTallas()
+        public async Task<List<Talla>> ObtenerTallas(string? categoria)
         {
-            return await _context.Tallas.ToListAsync();
+            var query = _context.Tallas.AsQueryable();
+            if (!string.IsNullOrEmpty(categoria))
+            {
+                query = query.Where(t => t.Categoria == categoria);
+            }
+            return await query.ToListAsync();
         }
 
         public async Task<Talla?> ObtenerTallaPorId(int id)
-        {
-            return await _context.Tallas.FindAsync(id);
-        }
+            => await _context.Tallas.FindAsync(id);
 
-        // NUEVO: Crear talla
         public async Task CrearTalla(Talla talla)
         {
             _context.Tallas.Add(talla);
             await _context.SaveChangesAsync();
         }
 
-        // NUEVO: Actualizar talla
         public async Task ActualizarTalla(Talla talla)
         {
             _context.Tallas.Update(talla);

@@ -1,6 +1,6 @@
-﻿using CH_BACKEND.DBCalzadosHuancayo;
+﻿// Repositories/ProductoRepositorio.cs
+using CH_BACKEND.DBCalzadosHuancayo;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,44 +16,45 @@ namespace CH_BACKEND.Repositories
             _context = context;
         }
 
-        // Filtra sólo por categoría, sin paginar
-        public async Task<List<Producto>> ObtenerPorCategoria(int cat)
+        public async Task<List<Producto>> ObtenerPorFiltros(
+            int cat,
+            string? genero,
+            string? articulo,
+            string? estilo)
         {
             var query = _context.Productos
                 .Include(p => p.IdSubCategoriaNavigation)
                 .Include(p => p.TallaProductos)
-                    .ThenInclude(tp => tp.IdTallaNavigation)
                 .AsQueryable();
 
             if (cat != 0)
-            {
                 query = query.Where(p => p.IdCategoria == cat);
-            }
+
+            if (!string.IsNullOrEmpty(genero))
+                query = query.Where(p => p.Genero == genero);
+
+            if (!string.IsNullOrEmpty(articulo))
+                query = query.Where(p => p.Articulo == articulo);
+
+
+            if (!string.IsNullOrEmpty(estilo))
+                query = query.Where(p => p.Estilo == estilo);
 
             return await query.ToListAsync();
         }
 
-        public async Task<Producto> ObtenerPorId(int id)
+        public async Task<Producto?> ObtenerPorId(int id)
         {
             return await _context.Productos
                 .Include(p => p.IdSubCategoriaNavigation)
                 .Include(p => p.TallaProductos)
-                    .ThenInclude(tp => tp.IdTallaNavigation)
                 .FirstOrDefaultAsync(p => p.IdProducto == id);
         }
 
         public async Task<bool> Crear(Producto producto)
         {
-            try
-            {
-                await _context.Productos.AddAsync(producto);
-                return await _context.SaveChangesAsync() > 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al insertar en la base de datos: {ex}");
-                throw;
-            }
+            await _context.Productos.AddAsync(producto);
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> Actualizar(Producto producto)
@@ -66,7 +67,6 @@ namespace CH_BACKEND.Repositories
         {
             var producto = await ObtenerPorId(id);
             if (producto == null) return false;
-
             _context.Productos.Remove(producto);
             return await _context.SaveChangesAsync() > 0;
         }

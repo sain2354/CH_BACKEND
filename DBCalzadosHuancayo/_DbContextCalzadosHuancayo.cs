@@ -68,6 +68,23 @@ public partial class _DbContextCalzadosHuancayo : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
+        // —— Configuración de borrado en cascada para Venta —— 
+        modelBuilder.Entity<Venta>()
+            .HasMany(v => v.DetalleVenta)
+            .WithOne(d => d.IdVentaNavigation)      // ← aquí
+            .HasForeignKey(d => d.IdVenta)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Venta>()
+            .HasMany(v => v.Pagos)
+            .WithOne(p => p.IdVentaNavigation)      // ← y aquí
+            .HasForeignKey(p => p.IdVenta)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+
         modelBuilder.Entity<Carrito>(entity =>
         {
             entity.HasKey(e => e.IdCarrito).HasName("PK__Carrito__83A2AD9C69CB431D");
@@ -81,20 +98,26 @@ public partial class _DbContextCalzadosHuancayo : DbContext
 
         modelBuilder.Entity<CarritoDetalle>(entity =>
         {
-            entity.HasKey(e => new { e.IdCarrito, e.IdProducto, e.IdTalla }).HasName("PK__Carrito___7090831C4615DB4B");
+            entity.HasKey(e => new { e.IdCarrito, e.IdProducto, e.IdTalla })
+                  .HasName("PK__Carrito___7090831C4615DB4B");
 
-            entity.HasOne(d => d.IdCarritoNavigation).WithMany(p => p.CarritoDetalles)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CarritoDetalle_Carrito");
+            entity.HasOne(d => d.IdCarritoNavigation)
+                  .WithMany(p => p.CarritoDetalles)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_CarritoDetalle_Carrito");
 
-            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.CarritoDetalles)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CarritoDetalle_Producto");
+            entity.HasOne(d => d.IdProductoNavigation)
+                  .WithMany(p => p.CarritoDetalles)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_CarritoDetalle_Producto");
 
-            entity.HasOne(d => d.IdTallaNavigation).WithMany(p => p.CarritoDetalles)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CarritoDetalle_Talla");
+            // ← Esta sección desaparece, ya no existe IdTallaNavigation:
+            // entity.HasOne(d => d.IdTallaNavigation)
+            //       .WithMany(p => p.CarritoDetalles)
+            //       .OnDelete(DeleteBehavior.ClientSetNull)
+            //       .HasConstraintName("FK_CarritoDetalle_Talla");
         });
+
 
         modelBuilder.Entity<Categoria>(entity =>
         {
@@ -103,18 +126,25 @@ public partial class _DbContextCalzadosHuancayo : DbContext
 
         modelBuilder.Entity<DetalleVenta>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__DetalleV__3213E83FB2E9106F");
+            entity.HasKey(e => e.Id)
+                  .HasName("PK__DetalleV__3213E83FB2E9106F");
 
-            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.DetalleVenta)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DetalleVe__id_pr__6477ECF3");
+            entity.HasOne(d => d.IdProductoNavigation)
+                  .WithMany(p => p.DetalleVenta)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK__DetalleVe__id_pr__6477ECF3");
 
-            entity.HasOne(d => d.IdUnidadMedidaNavigation).WithMany(p => p.DetalleVenta).HasConstraintName("FK__DetalleVe__id_un__656C112C");
+            entity.HasOne(d => d.IdUnidadMedidaNavigation)
+                  .WithMany(p => p.DetalleVenta)
+                  .HasConstraintName("FK__DetalleVe__id_un__656C112C");
 
-            entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.DetalleVenta)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DetalleVe__id_ve__6383C8BA");
+            entity.HasOne(d => d.IdVentaNavigation)
+                  .WithMany(p => p.DetalleVenta)
+                  .HasForeignKey(d => d.IdVenta)              // asegúrate de incluir el FK explícito
+                  .OnDelete(DeleteBehavior.Cascade)            // ← aquí cambiamos a Cascade
+                  .HasConstraintName("FK__DetalleVe__id_ve__6383C8BA");
         });
+
 
         modelBuilder.Entity<Devolucion>(entity =>
         {
@@ -170,17 +200,17 @@ public partial class _DbContextCalzadosHuancayo : DbContext
 
         modelBuilder.Entity<Pago>(entity =>
         {
-            entity.HasKey(e => e.IdPago).HasName("PK__Pago__0941B074510023E3");
+            entity.HasKey(e => e.IdPago)
+                  .HasName("PK__Pago__0941B074510023E3");
 
-            // Se elimina la relación con MedioPago:
-            // entity.HasOne(d => d.IdMedioPagoNavigation).WithMany(p => p.Pagos)
-            //     .OnDelete(DeleteBehavior.ClientSetNull)
-            //     .HasConstraintName("FK__Pago__id_medio_p__6B24EA82");
-
-            entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.Pagos)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Pago__id_venta__6A30C649");
+            // Relación con Venta: borrado en cascada
+            entity.HasOne(d => d.IdVentaNavigation)
+                  .WithMany(p => p.Pagos)
+                  .HasForeignKey(d => d.IdVenta)
+                  .OnDelete(DeleteBehavior.Cascade)
+                  .HasConstraintName("FK__Pago__id_venta__6A30C649");
         });
+
 
 
         modelBuilder.Entity<Persona>(entity =>
@@ -250,12 +280,25 @@ public partial class _DbContextCalzadosHuancayo : DbContext
 
         modelBuilder.Entity<TallaProducto>(entity =>
         {
-            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.TallaProductos).HasConstraintName("FK_TallaProducto_Producto");
+            // Clave primaria compuesta:
+            entity.HasKey(e => new { e.IdProducto, e.Usa })
+                  .HasName("PK_TallaProducto");
 
-            entity.HasOne(d => d.IdTallaNavigation).WithMany(p => p.TallaProductos)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TallaProducto_Talla");
+            // Tipos de columna:
+            entity.Property(e => e.Cm)
+                  .HasColumnType("decimal(8,2)");
+
+            entity.Property(e => e.Stock)
+                  .HasColumnType("decimal(8,2)");
+
+            // Relación con Producto (1:N):
+            entity.HasOne(d => d.IdProductoNavigation)
+                  .WithMany(p => p.TallaProductos)
+                  .HasForeignKey(d => d.IdProducto)
+                  .OnDelete(DeleteBehavior.Cascade)
+                  .HasConstraintName("FK_TallaProducto_Producto");
         });
+
 
         modelBuilder.Entity<UnidadMedida>(entity =>
         {

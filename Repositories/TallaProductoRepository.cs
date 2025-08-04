@@ -10,48 +10,41 @@ namespace CH_BACKEND.Repositories
     {
         private readonly _DbContextCalzadosHuancayo _context;
 
-        public TallaProductoRepository(_DbContextCalzadosHuancayo context)
+        public TallaProductoRepository(_DbContextCalzadosHuancayo ctx)
         {
-            _context = context;
+            _context = ctx;
         }
 
-        public async Task<List<TallaProducto>> ObtenerTallaProductos()
-        {
-            return await _context.TallaProductos.ToListAsync();
-        }
-
-        // NUEVO: Obtener tallas de un producto
         public async Task<List<TallaProducto>> ObtenerTallasPorProducto(int idProducto)
         {
-            // Filtra TallaProductos por idProducto
             return await _context.TallaProductos
                 .Where(tp => tp.IdProducto == idProducto)
                 .ToListAsync();
         }
 
-        public async Task<TallaProducto?> ObtenerTallaProductoPorId(int idProducto, int idTalla)
+        public async Task<TallaProducto?> ObtenerTallaProductoPorId(int idProducto, int usa)
         {
-            return await _context.TallaProductos.FindAsync(idProducto, idTalla);
+            return await _context.TallaProductos
+                .FindAsync(idProducto, usa);
         }
 
-        public async Task CrearTallaProducto(TallaProducto tallaProducto)
+        public async Task CrearTallaProducto(TallaProducto entity)
         {
-            _context.TallaProductos.Add(tallaProducto);
+            _context.TallaProductos.Add(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task ActualizarTallaProducto(TallaProducto tallaProducto)
+        public async Task ActualizarTallaProducto(TallaProducto entity)
         {
-            _context.TallaProductos.Update(tallaProducto);
+            _context.TallaProductos.Update(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> EliminarTallaProducto(int idProducto, int idTalla)
+        public async Task<bool> EliminarTallaProducto(int idProducto, int usa)
         {
-            var tallaProducto = await _context.TallaProductos.FindAsync(idProducto, idTalla);
-            if (tallaProducto == null) return false;
-
-            _context.TallaProductos.Remove(tallaProducto);
+            var entity = await _context.TallaProductos.FindAsync(idProducto, usa);
+            if (entity == null) return false;
+            _context.TallaProductos.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }

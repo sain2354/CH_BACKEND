@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Pago.cs (Entidad)
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,22 +21,23 @@ namespace CH_BACKEND.DBCalzadosHuancayo
         [Column("fecha_pago")]
         public DateOnly FechaPago { get; set; }
 
-        // Se mantiene la columna id_medio_pago pero se hace nullable para evitar errores al guardar
         [Column("id_medio_pago")]
         public int? IdMedioPago { get; set; }
 
-        // Preferencia generada en Mercado Pago
         [Column("preference_id_mp")]
         [StringLength(100)]
         public string? PreferenceIdMP { get; set; }
 
-        // Payment ID final de Mercado Pago
         [Column("id_transaccion_mp")]
         [StringLength(100)]
         public string? IdTransaccionMP { get; set; }
 
         [Column("estado_pago", TypeName = "nvarchar(50)")]
         public string EstadoPago { get; set; } = "Pendiente";
+
+        [Column("comprobante_url")]
+        [StringLength(500)]
+        public string? ComprobanteUrl { get; set; }
 
         [ForeignKey("IdVenta")]
         [InverseProperty("Pagos")]

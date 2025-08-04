@@ -1,55 +1,77 @@
-﻿using CH_BACKEND.DBCalzadosHuancayo;
+﻿using System.Collections.Generic;
 
-public class ProductoResponse
+namespace CH_BACKEND.Models
 {
-    public int IdProducto { get; set; }
-    public string Nombre { get; set; }
-    public string CodigoBarra { get; set; }
-    public decimal PrecioVenta { get; set; }
-    public decimal Stock { get; set; }
-    public decimal StockMinimo { get; set; }
-    public decimal? PrecioCompra { get; set; }
-    public bool Estado { get; set; }
-    public string? Foto { get; set; }
-    public int IdCategoria { get; set; }
-    public int? IdSubCategoria { get; set; }
-    public int IdUnidadMedida { get; set; }
-    public string Marca { get; set; }
-
-    // NUEVO: la lista de tallas
-    public List<string> Tallas { get; set; } = new List<string>();
-
-    public ProductoResponse() { }
-
-    public ProductoResponse(Producto producto)
+    public class ProductoResponse
     {
-        IdProducto = producto.IdProducto;
-        Nombre = producto.Nombre;
-        CodigoBarra = producto.CodigoBarra;
-        PrecioVenta = producto.PrecioVenta;
-        Stock = producto.Stock;
-        StockMinimo = producto.StockMinimo;
-        PrecioCompra = producto.PrecioCompra;
-        Estado = producto.Estado;
-        Foto = producto.Foto;
-        IdCategoria = producto.IdCategoria;
-        IdSubCategoria = producto.IdSubCategoria;
-        IdUnidadMedida = producto.IdUnidadMedida;
+        public int IdProducto { get; set; }
+        public string Nombre { get; set; }
+        public string CodigoBarra { get; set; }
+        public decimal PrecioVenta { get; set; }
+        public decimal Stock { get; set; }
+        public decimal StockMinimo { get; set; }
+        public decimal? PrecioCompra { get; set; }
+        public bool Estado { get; set; }
+        public string? Foto { get; set; }
+        public int IdCategoria { get; set; }
+        public int? IdSubCategoria { get; set; }
+        public int IdUnidadMedida { get; set; }
 
-        Marca = producto.IdSubCategoriaNavigation != null
-            ? producto.IdSubCategoriaNavigation.Descripcion
-            : "Sin marca";
+        // ——— Campos originales de características ———
+        public string? Mpn { get; set; }
+        public string? ShippingInfo { get; set; }
+        public string? Material { get; set; }
+        public string? Color { get; set; }
 
-        // AQUÍ convertimos la relación TallaProductos -> Tallas (descripción)
-        if (producto.TallaProductos != null)
+        // ——— Nuevos campos para filtrado ———
+        public string? Genero { get; set; }
+        public string? Articulo { get; set; }
+        public string? Estilo { get; set; }
+
+        // — Array de tallas enriquecidas —
+        public List<TallaProductoResponse> Sizes { get; set; } = new List<TallaProductoResponse>();
+
+        public ProductoResponse() { }
+
+        public ProductoResponse(DBCalzadosHuancayo.Producto producto)
         {
-            // Por cada TallaProducto, tomamos la descripción de Talla
-            foreach (var tp in producto.TallaProductos)
+            IdProducto = producto.IdProducto;
+            Nombre = producto.Nombre;
+            CodigoBarra = producto.CodigoBarra;
+            PrecioVenta = producto.PrecioVenta;
+            Stock = producto.Stock;
+            StockMinimo = producto.StockMinimo;
+            PrecioCompra = producto.PrecioCompra;
+            Estado = producto.Estado;
+            Foto = producto.Foto;
+            IdCategoria = producto.IdCategoria;
+            IdSubCategoria = producto.IdSubCategoria;
+            IdUnidadMedida = producto.IdUnidadMedida;
+
+            // valores originales
+            Mpn = producto.Mpn;
+            ShippingInfo = producto.ShippingInfo;
+            Material = producto.Material;
+            Color = producto.Color;
+
+            // valores para filtrado
+            Genero = producto.Genero;
+            Articulo = producto.Articulo;
+            Estilo = producto.Estilo;
+
+            // tallas
+            if (producto.TallaProductos != null)
             {
-                // Chequea que IdTallaNavigation no sea null
-                if (tp.IdTallaNavigation != null)
+                foreach (var tp in producto.TallaProductos)
                 {
-                    Tallas.Add(tp.IdTallaNavigation.Descripcion);
+                    Sizes.Add(new TallaProductoResponse
+                    {
+                        IdProducto = tp.IdProducto,
+                        Usa = tp.Usa,
+                        Eur = tp.Eur,
+                        Cm = tp.Cm,
+                        Stock = tp.Stock
+                    });
                 }
             }
         }

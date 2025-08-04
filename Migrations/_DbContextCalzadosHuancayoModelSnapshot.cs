@@ -53,15 +53,18 @@ namespace CH_BACKEND.Migrations
                 {
                     b.Property<int>("IdCarrito")
                         .HasColumnType("int")
-                        .HasColumnName("id_carrito");
+                        .HasColumnName("id_carrito")
+                        .HasColumnOrder(0);
 
                     b.Property<int>("IdProducto")
                         .HasColumnType("int")
-                        .HasColumnName("id_producto");
+                        .HasColumnName("id_producto")
+                        .HasColumnOrder(1);
 
                     b.Property<int>("IdTalla")
                         .HasColumnType("int")
-                        .HasColumnName("id_talla");
+                        .HasColumnName("id_talla")
+                        .HasColumnOrder(2);
 
                     b.Property<decimal>("Cantidad")
                         .HasColumnType("decimal(8, 2)")
@@ -71,8 +74,6 @@ namespace CH_BACKEND.Migrations
                         .HasName("PK__Carrito___7090831C4615DB4B");
 
                     b.HasIndex("IdProducto");
-
-                    b.HasIndex("IdTalla");
 
                     b.ToTable("Carrito_Detalle");
                 });
@@ -427,6 +428,11 @@ namespace CH_BACKEND.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPago"));
 
+                    b.Property<string>("ComprobanteUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("comprobante_url");
+
                     b.Property<string>("EstadoPago")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
@@ -525,6 +531,12 @@ namespace CH_BACKEND.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProducto"));
 
+                    b.Property<string>("Articulo")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("articulo");
+
                     b.Property<string>("CodigoBarra")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -532,14 +544,32 @@ namespace CH_BACKEND.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("codigo_barra");
 
+                    b.Property<string>("Color")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("Color");
+
                     b.Property<bool>("Estado")
                         .HasColumnType("bit")
                         .HasColumnName("estado");
+
+                    b.Property<string>("Estilo")
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("estilo");
 
                     b.Property<string>("Foto")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)")
                         .HasColumnName("foto");
+
+                    b.Property<string>("Genero")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("genero");
 
                     b.Property<int>("IdCategoria")
                         .HasColumnType("int")
@@ -552,6 +582,24 @@ namespace CH_BACKEND.Migrations
                     b.Property<int>("IdUnidadMedida")
                         .HasColumnType("int")
                         .HasColumnName("id_unidad_medida");
+
+                    b.Property<string>("Marca")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("marca");
+
+                    b.Property<string>("Material")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("Material");
+
+                    b.Property<string>("Mpn")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("Mpn");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -567,6 +615,11 @@ namespace CH_BACKEND.Migrations
                     b.Property<decimal>("PrecioVenta")
                         .HasColumnType("decimal(8, 2)")
                         .HasColumnName("precio_venta");
+
+                    b.Property<string>("ShippingInfo")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("ShippingInfo");
 
                     b.Property<decimal>("Stock")
                         .HasColumnType("decimal(8, 2)")
@@ -694,12 +747,23 @@ namespace CH_BACKEND.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTalla"));
 
-                    b.Property<string>("Descripcion")
+                    b.Property<string>("Categoria")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("descripcion");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("categoria");
+
+                    b.Property<decimal>("Cm")
+                        .HasColumnType("decimal(8,2)")
+                        .HasColumnName("cm");
+
+                    b.Property<int>("Eur")
+                        .HasColumnType("int")
+                        .HasColumnName("eur");
+
+                    b.Property<int>("Usa")
+                        .HasColumnType("int")
+                        .HasColumnName("usa");
 
                     b.HasKey("IdTalla")
                         .HasName("PK__Talla__C16F403DA58B752D");
@@ -711,19 +775,28 @@ namespace CH_BACKEND.Migrations
                 {
                     b.Property<int>("IdProducto")
                         .HasColumnType("int")
-                        .HasColumnName("id_producto");
+                        .HasColumnName("id_producto")
+                        .HasColumnOrder(0);
 
-                    b.Property<int>("IdTalla")
+                    b.Property<int>("Usa")
                         .HasColumnType("int")
-                        .HasColumnName("id_talla");
+                        .HasColumnName("usa")
+                        .HasColumnOrder(1);
+
+                    b.Property<decimal>("Cm")
+                        .HasColumnType("decimal(8,2)")
+                        .HasColumnName("cm");
+
+                    b.Property<int>("Eur")
+                        .HasColumnType("int")
+                        .HasColumnName("eur");
 
                     b.Property<decimal>("Stock")
-                        .HasColumnType("decimal(8, 2)")
+                        .HasColumnType("decimal(8,2)")
                         .HasColumnName("stock");
 
-                    b.HasKey("IdProducto", "IdTalla");
-
-                    b.HasIndex("IdTalla");
+                    b.HasKey("IdProducto", "Usa")
+                        .HasName("PK_TallaProducto");
 
                     b.ToTable("Talla_Producto");
                 });
@@ -884,7 +957,7 @@ namespace CH_BACKEND.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVenta"));
 
                     b.Property<decimal>("CostoEnvio")
-                        .HasColumnType("decimal(18, 2)")
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("costo_envio");
 
                     b.Property<string>("Estado")
@@ -903,25 +976,34 @@ namespace CH_BACKEND.Migrations
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
-                    b.Property<string>("NumeroComprobante")
+                    b.Property<string>("MetodoEntrega")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("numeroComprobante");
+                        .HasColumnName("metodo_entrega");
+
+                    b.Property<string>("NumeroComprobante")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Serie")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("serie");
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("SucursalRecoge")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("sucursal_recoge");
 
                     b.Property<string>("TipoComprobante")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("TotalIgv")
-                        .HasColumnType("decimal(18, 2)")
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("total_igv");
 
                     b.HasKey("IdVenta")
@@ -1008,17 +1090,9 @@ namespace CH_BACKEND.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_CarritoDetalle_Producto");
 
-                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Talla", "IdTallaNavigation")
-                        .WithMany("CarritoDetalles")
-                        .HasForeignKey("IdTalla")
-                        .IsRequired()
-                        .HasConstraintName("FK_CarritoDetalle_Talla");
-
                     b.Navigation("IdCarritoNavigation");
 
                     b.Navigation("IdProductoNavigation");
-
-                    b.Navigation("IdTallaNavigation");
                 });
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.DetalleVenta", b =>
@@ -1037,6 +1111,7 @@ namespace CH_BACKEND.Migrations
                     b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Venta", "IdVentaNavigation")
                         .WithMany("DetalleVenta")
                         .HasForeignKey("IdVenta")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__DetalleVe__id_ve__6383C8BA");
 
@@ -1111,6 +1186,7 @@ namespace CH_BACKEND.Migrations
                     b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Venta", "IdVentaNavigation")
                         .WithMany("Pagos")
                         .HasForeignKey("IdVenta")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__Pago__id_venta__6A30C649");
 
@@ -1163,15 +1239,7 @@ namespace CH_BACKEND.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_TallaProducto_Producto");
 
-                    b.HasOne("CH_BACKEND.DBCalzadosHuancayo.Talla", "IdTallaNavigation")
-                        .WithMany("TallaProductos")
-                        .HasForeignKey("IdTalla")
-                        .IsRequired()
-                        .HasConstraintName("FK_TallaProducto_Talla");
-
                     b.Navigation("IdProductoNavigation");
-
-                    b.Navigation("IdTallaNavigation");
                 });
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.UsuarioDireccion", b =>
@@ -1276,13 +1344,6 @@ namespace CH_BACKEND.Migrations
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.SubCategoria", b =>
                 {
                     b.Navigation("Productos");
-                });
-
-            modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.Talla", b =>
-                {
-                    b.Navigation("CarritoDetalles");
-
-                    b.Navigation("TallaProductos");
                 });
 
             modelBuilder.Entity("CH_BACKEND.DBCalzadosHuancayo.UnidadMedida", b =>

@@ -16,6 +16,10 @@ namespace CH_BACKEND.Models
         public string EstadoPago { get; set; } = null!;
         public decimal CostoEnvio { get; set; }
 
+        // NUEVOS CAMPOS
+        public string MetodoEntrega { get; set; } = null!;
+        public string? SucursalRecoge { get; set; }
+
         public VentaResponse(Venta venta)
         {
             IdVenta = venta.IdVenta;
@@ -28,6 +32,8 @@ namespace CH_BACKEND.Models
             TotalIgv = venta.TotalIgv;
             EstadoPago = venta.EstadoPago;
             CostoEnvio = venta.CostoEnvio;
+            MetodoEntrega = venta.MetodoEntrega;
+            SucursalRecoge = venta.SucursalRecoge;
         }
     }
 }

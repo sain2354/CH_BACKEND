@@ -17,7 +17,6 @@ namespace CH_BACKEND.Repositories
         public List<Pago> ObtenerTodos()
         {
             return _context.Pagos
-                // Se elimina la inclusión de MedioPagoNavigation
                 .Include(p => p.IdVentaNavigation)
                 .ToList();
         }
@@ -25,7 +24,6 @@ namespace CH_BACKEND.Repositories
         public Pago? ObtenerPorId(int id)
         {
             return _context.Pagos
-                // Se elimina la inclusión de MedioPagoNavigation
                 .Include(p => p.IdVentaNavigation)
                 .FirstOrDefault(p => p.IdPago == id);
         }
@@ -33,6 +31,18 @@ namespace CH_BACKEND.Repositories
         public void Agregar(Pago pago)
         {
             _context.Pagos.Add(pago);
+            _context.SaveChanges();
+        }
+
+        public void Actualizar(Pago pago)
+        {
+            _context.Pagos.Update(pago);
+            _context.SaveChanges();
+        }
+
+        public void Eliminar(Pago pago)
+        {
+            _context.Pagos.Remove(pago);
             _context.SaveChanges();
         }
     }

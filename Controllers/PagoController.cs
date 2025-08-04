@@ -1,11 +1,6 @@
 ﻿using CH_BACKEND.Logica;
 using CH_BACKEND.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace CH_BACKEND.Controllers
 {
@@ -14,22 +9,16 @@ namespace CH_BACKEND.Controllers
     public class PagoController : ControllerBase
     {
         private readonly PagoLogica _pagoLogica;
-        private readonly IConfiguration _config;
 
-        public PagoController(PagoLogica pagoLogica, IConfiguration config)
+        public PagoController(PagoLogica pagoLogica)
         {
             _pagoLogica = pagoLogica;
-            _config = config;
         }
 
-        // GET: api/Pago
         [HttpGet]
         public ActionResult<List<PagoResponse>> ObtenerPagos()
-        {
-            return Ok(_pagoLogica.ObtenerPagos());
-        }
+            => Ok(_pagoLogica.ObtenerPagos());
 
-        // GET: api/Pago/5
         [HttpGet("{id}")]
         public ActionResult<PagoResponse> ObtenerPagoPorId(int id)
         {
@@ -38,109 +27,75 @@ namespace CH_BACKEND.Controllers
             return Ok(pago);
         }
 
-        // POST: api/Pago
-        [HttpPost]
-        public IActionResult CrearPago([FromBody] PagoRequest request)
+        [HttpPost("{idVenta}")]
+        public IActionResult CrearPago(int idVenta, [FromBody] PagoRequest req)
         {
-            _pagoLogica.CrearPago(request);
-            return CreatedAtAction(nameof(ObtenerPagoPorId), new { id = request.IdVenta }, request);
+            _pagoLogica.CrearPago(idVenta, req);
+            return CreatedAtAction(nameof(ObtenerPagoPorId), new { id = idVenta }, null);
         }
 
-        // ---------------------------------------------------------------------
-        // NUEVO: Generar Preferencia en Mercado Pago usando HttpClient
-        // POST: api/Pago/GenerarPreferencia
-        // Body: { "idVenta": 123 }
-        // Devuelve: { preferenceId, initPoint }
-        // ---------------------------------------------------------------------
-        [HttpPost("GenerarPreferencia")]
-        public async Task<IActionResult> GenerarPreferencia([FromBody] GenerarPreferenciaRequest request)
+        [HttpPut("{idPago}/validar")]
+        public IActionResult ValidarPago(int idPago)
         {
-            if (request == null || request.IdVenta <= 0)
-            {
-                return BadRequest("Debe proporcionar un IdVenta válido.");
-            }
-
-            try
-            {
-                var resultado = await _pagoLogica.GenerarPreferenciaMP(request.IdVenta);
-                if (resultado == null)
-                {
-                    return BadRequest("No se pudo generar la preferencia. Verifica que la Venta exista.");
-                }
-
-                // resultado es un tuple (string PreferenceId, string InitPoint)
-                return Ok(new
-                {
-                    preferenceId = resultado.Value.PreferenceId,
-                    initPoint = resultado.Value.InitPoint
-                });
-            }
-            catch (System.Exception ex)
-            {
-                // Devuelve status 500 con mensaje de error y stack trace
-                return StatusCode(500, new
-                {
-                    error = ex.Message,
-                    details = ex.StackTrace
-                });
-            }
+            var ok = _pagoLogica.CambiarEstadoPago(idPago, "Pago Validado");
+            return ok ? NoContent() : NotFound();
         }
 
-        // ---------------------------------------------------------------------
-        // NUEVO: Webhook de Mercado Pago
-        // POST: api/Pago/Webhook
-        // Configura esta URL en tu panel de MP para recibir notificaciones
-        // ---------------------------------------------------------------------
-        [HttpPost("Webhook")]
-        public async Task<IActionResult> Webhook()
+        [HttpPut("{idPago}/rechazar")]
+        public IActionResult RechazarPago(int idPago)
         {
-            using var reader = new StreamReader(Request.Body);
-            var body = await reader.ReadToEndAsync();
+            var ok = _pagoLogica.CambiarEstadoPago(idPago, "Rechazado");
+            return ok ? NoContent() : NotFound();
+        }
 
-            if (string.IsNullOrEmpty(body))
+        [HttpPost("{idVenta}/archivo")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CrearPagoConArchivo(
+            int idVenta,
+            [FromForm] decimal montoPagado,
+            [FromForm] DateTime fechaPago,
+            [FromForm] int? idMedioPago,
+            [FromForm] string? idTransaccionMP,
+            [FromForm] string? estadoPago,
+            [FromForm] IFormFile comprobante)
+        {
+            if (comprobante == null || comprobante.Length == 0)
+                return BadRequest("Se debe enviar un archivo de comprobante.");
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "comprobantes");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(comprobante.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            await using (var stream = System.IO.File.Create(filePath))
+                await comprobante.CopyToAsync(stream);
+
+            var req = new PagoRequest
             {
-                return BadRequest("No se recibió información del webhook.");
-            }
+                MontoPagado = montoPagado,
+                FechaPago = DateOnly.FromDateTime(fechaPago),
+                IdMedioPago = idMedioPago.GetValueOrDefault(),
+                IdTransaccionMP = idTransaccionMP,
+                EstadoPago = string.IsNullOrEmpty(estadoPago) ? "Pendiente" : estadoPago,
+                ComprobanteUrl = $"/comprobantes/{uniqueFileName}"
+            };
 
-            // Parseamos el JSON
-            dynamic data = JsonConvert.DeserializeObject(body);
-            if (data == null)
-            {
-                return BadRequest("No se pudo deserializar la información del webhook.");
-            }
+            _pagoLogica.CrearPago(idVenta, req);
+            return NoContent();
+        }
 
-            // Normalmente Mercado Pago envía algo como:
-            // {
-            //   "id": 123456789,
-            //   "live_mode": true,
-            //   "type": "payment",
-            //   "date_created": "...",
-            //   "application_id": "...",
-            //   "user_id": "...",
-            //   "api_version": "...",
-            //   "action": "payment.created",
-            //   "data": {
-            //       "id": "123456789"
-            //   }
-            // }
-            // En "data.id" estaría el Payment ID
-            string paymentId = data?.data?.id;
-            if (string.IsNullOrEmpty(paymentId))
-            {
-                // A veces viene en "id" directamente
-                paymentId = data?.id;
-            }
+        [HttpPut("{idPago}")]
+        public IActionResult ActualizarPago(int idPago, [FromBody] PagoRequest req)
+        {
+            _pagoLogica.ActualizarPago(idPago, req);
+            return NoContent();
+        }
 
-            // Si no hay paymentId, no podemos continuar
-            if (string.IsNullOrEmpty(paymentId))
-            {
-                return BadRequest("No se encontró paymentId en la notificación.");
-            }
-
-            // Llamamos a la lógica para consultar el pago y actualizar estado
-            await _pagoLogica.ProcesarPagoAprobado(paymentId);
-
-            return Ok();
+        [HttpDelete("{idPago}")]
+        public IActionResult EliminarPago(int idPago)
+        {
+            _pagoLogica.EliminarPago(idPago);
+            return NoContent();
         }
     }
 }

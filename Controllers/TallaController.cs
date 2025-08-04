@@ -10,43 +10,45 @@ namespace CH_BACKEND.Controllers
     [ApiController]
     public class TallaController : ControllerBase
     {
-        private readonly TallaLogica _tallaLogica;
+        private readonly TallaLogica _logic;
 
-        public TallaController(TallaLogica tallaLogica)
+        public TallaController(TallaLogica logic)
         {
-            _tallaLogica = tallaLogica;
+            _logic = logic;
         }
 
+        // GET /api/Talla?categoria=Hombres
         [HttpGet]
-        public async Task<ActionResult<List<TallaResponse>>> ObtenerTallas()
+        public async Task<ActionResult<List<TallaResponse>>> ObtenerTallas([FromQuery] string? categoria = null)
         {
-            var tallas = await _tallaLogica.ObtenerTallas();
-            return Ok(tallas);
+            var lista = await _logic.ObtenerTallas(categoria);
+            return Ok(lista);
         }
 
+        // GET /api/Talla/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<TallaResponse>> ObtenerTallaPorId(int id)
         {
-            var talla = await _tallaLogica.ObtenerTallaPorId(id);
-            if (talla == null) return NotFound(new { mensaje = "Talla no encontrada" });
-            return Ok(talla);
+            var t = await _logic.ObtenerTallaPorId(id);
+            if (t == null) return NotFound(new { mensaje = "Talla no encontrada" });
+            return Ok(t);
         }
 
-        // NUEVO: Crear Talla
+        // POST /api/Talla
         [HttpPost]
-        public async Task<ActionResult<TallaResponse>> CrearTalla([FromBody] TallaRequest request)
+        public async Task<ActionResult<TallaResponse>> CrearTalla([FromBody] TallaRequest req)
         {
-            var tallaCreada = await _tallaLogica.CrearTalla(request);
-            return CreatedAtAction(nameof(ObtenerTallaPorId), new { id = tallaCreada.IdTalla }, tallaCreada);
+            var created = await _logic.CrearTalla(req);
+            return CreatedAtAction(nameof(ObtenerTallaPorId), new { id = created.IdTalla }, created);
         }
 
-        // NUEVO: Actualizar Talla
+        // PUT /api/Talla/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> ActualizarTalla(int id, [FromBody] TallaRequest request)
+        public async Task<IActionResult> ActualizarTalla(int id, [FromBody] TallaRequest req)
         {
-            var resultado = await _tallaLogica.ActualizarTalla(id, request);
-            if (!resultado) return NotFound(new { mensaje = "Talla no encontrada" });
-            return NoContent(); // 204
+            var ok = await _logic.ActualizarTalla(id, req);
+            if (!ok) return NotFound(new { mensaje = "Talla no encontrada" });
+            return NoContent();
         }
     }
 }

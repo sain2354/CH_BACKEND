@@ -1,6 +1,7 @@
 ﻿using CH_BACKEND.DBCalzadosHuancayo;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CH_BACKEND.Repositories
@@ -19,6 +20,7 @@ namespace CH_BACKEND.Repositories
             return await _context.Ventas
                 .Include(v => v.IdUsuarioNavigation)
                 .Include(v => v.DetalleVenta)
+                .Include(v => v.Pagos)
                 .ToListAsync();
         }
 
@@ -27,14 +29,15 @@ namespace CH_BACKEND.Repositories
             return await _context.Ventas
                 .Include(v => v.IdUsuarioNavigation)
                 .Include(v => v.DetalleVenta)
+                .Include(v => v.Pagos)
                 .FirstOrDefaultAsync(v => v.IdVenta == id);
         }
 
         public async Task<Venta?> Crear(Venta venta)
         {
             await _context.Ventas.AddAsync(venta);
-            var result = await _context.SaveChangesAsync() > 0;
-            return result ? venta : null;
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0 ? venta : null;
         }
 
         public async Task<bool> Actualizar(Venta venta)
@@ -47,15 +50,39 @@ namespace CH_BACKEND.Repositories
         {
             var venta = await ObtenerPorId(id);
             if (venta == null) return false;
-
             _context.Ventas.Remove(venta);
             return await _context.SaveChangesAsync() > 0;
         }
 
-        // Método agregado para guardar cambios de forma asíncrona.
         public async Task<bool> GuardarCambiosAsync()
         {
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task AgregarPagoAsync(Pago pago)
+        {
+            _context.Pagos.Add(pago);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AgregarHistorialAsync(VentaEstadoHistorial hist)
+        {
+            _context.VentaEstadoHistorials.Add(hist);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Venta?> ObtenerConDetalle(int id)
+        {
+            return await _context.Ventas
+                .Include(v => v.IdUsuarioNavigation)
+                    .ThenInclude(u => u.UsuarioDireccions)
+                .Include(v => v.DetalleVenta)
+                    .ThenInclude(d => d.IdProductoNavigation)          // PARA EL NOMBRE E IMAGEN
+                .Include(v => v.DetalleVenta)
+                    .ThenInclude(d => d.IdUnidadMedidaNavigation)      // PARA LA TALLA
+                .Include(v => v.Pagos)
+                .FirstOrDefaultAsync(v => v.IdVenta == id);
+        }
+
     }
 }
